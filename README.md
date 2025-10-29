@@ -100,7 +100,7 @@ copilot --help
 
 ## 🏗️ Estrutura do Projeto
 
-\`\`\`
+```
 copilot-termux/
 ├── install-v346.sh          # Instalador v0.0.346
 ├── install-v353.sh          # Instalador v0.0.353
@@ -116,7 +116,7 @@ copilot-termux/
 │   ├── TROUBLESHOOTING.md
 │   └── FAQ.md
 └── README.md
-\`\`\`
+```
 
 ## 🤝 Contribuindo
 
