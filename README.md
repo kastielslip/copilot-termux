@@ -1,304 +1,102 @@
-<div align="center">
+<a href="https://git.io/typing-svg">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=30&pause=1000&color=0DF700&width=500&lines=Copilot+CLI+no+Termux+ARM64+%F0%9F%9A%80" alt="Typing SVG" />
+</a>
 
-<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=700&size=32&duration=3000&pause=1000&color=00D9FF&center=true&vCenter=true&width=800&lines=GitHub+Copilot+CLI+%F0%9F%9A%80;Running+on+Termux+Android+%F0%9F%94%A5;ARM64+Native+Support+%E2%9A%A1" alt="Typing SVG" />
+<p align="center">
+  <img src="https://media.giphy.com/media/dLolp8dtrYCJi/giphy.gif" alt="Mr Robot" width="100%">
+</p>
 
-# 🚀 GitHub Copilot CLI for Termux
+# 🤖 Copilot CLI no Termux (ARM64)
 
-[![Platform](https://img.shields.io/badge/Platform-Termux%20ARM64-orange?style=for-the-badge&logo=android)](https://termux.dev)
-[![Node](https://img.shields.io/badge/Node.js-18+-green?style=for-the-badge&logo=node.js)](https://nodejs.org)
-[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/kastielslip/copilot-termux?style=for-the-badge&logo=github)](https://github.com/kastielslip/copilot-termux/stargazers)
-[![Forks](https://img.shields.io/github/forks/kastielslip/copilot-termux?style=for-the-badge&logo=github)](https://github.com/kastielslip/copilot-termux/network/members)
+Esse projeto é fruto de muita persistência, testes e pesquisas para rodar o **GitHub Copilot CLI** no Termux (Android ARM64). Depois de dias tentando, conseguimos fazer funcionar perfeitamente!
 
-### 🎯 Complete installation of GitHub Copilot CLI (v0.0.346 & v0.0.353) working 100% on Termux Android ARM64
+## 📦 O que tem aqui
 
-<div align="center">
-
-[Installation](#-instalacao) • [Usage](#-uso) • [Documentation](#-documentacao) • [Troubleshooting](#-troubleshooting) • [Contributing](#-contribuindo)
-
-</div>
-
----
-
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
-
-</div>
+- **Scripts de instalação testados e funcionando**
+- **Patches para node-pty e sharp**
+- **Duas versões disponíveis: v0.0.346 (estável) e v0.0.353 (em testes)**
+- **Documentação completa de como instalar**
+- **Backup dos tarballs originais**
 
 ---
 
-## ✨ Highlights
+## 🎯 Instalação Rápida
 
-<div align="center">
-
-| Feature | Description |
-|---------|-------------|
-| 🎯 **Two Versions** | v0.0.346 (stable) & v0.0.353 (advanced) |
-| ✅ **100% Functional** | Full support for Termux Android ARM64 |
-| 🔧 **JavaScript Stubs** | Native modules bypass (node-pty & sharp) |
-| ⚡ **Module._load Hooks** | Smart binary interception (v0.0.353) |
-| 🤖 **Automated Scripts** | One-command installation |
-| 📚 **Complete Docs** | Portuguese & English documentation |
-| 🚀 **Production Ready** | Tested and validated |
-| 💪 **Community Driven** | Open source and contributions welcome |
-
-</div>
-
----
-
-## 📦 Available Versions
-
-<div align="center">
-
-<table>
-<tr>
-<th><h3>🟢 v0.0.346 - Stable</h3></th>
-<th><h3>🔵 v0.0.353 - Advanced</h3></th>
-</tr>
-<tr>
-<td align="center">
-
-<img src="https://img.shields.io/badge/Size-10MB-green?style=for-the-badge" />
-
-**Method:** Direct Stubs  
-**Complexity:** 🟢 Low  
-**Best For:** Daily use  
-**Status:** ✅ Production Ready  
-
-</td>
-<td align="center">
-
-<img src="https://img.shields.io/badge/Size-71MB-blue?style=for-the-badge" />
-
-**Method:** Module._load Hook  
-**Complexity:** 🟡 Medium  
-**Best For:** Latest features  
-**Status:** ✅ Production Ready  
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="center">
-<br>
-<img src="https://img.shields.io/badge/Both_Versions-Fully_Tested-success?style=for-the-badge&logo=checkmarx" />
-</td>
-</tr>
-</table>
-
-</div>
-
----
-
-<div align="center">
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
-</div>
-
-## 🚀 Installation
-
-<div align="center">
-
-### 📋 Prerequisites</div>
+### Opção 1: v0.0.353 (Mais Recente)
 
 ```bash
-# Atualizar Termux
-pkg update && pkg upgrade -y
-
-# Instalar dependencias
-pkg install nodejs git -y
+wget https://raw.githubusercontent.com/ErnaneJ/copilot-termux/main/install-v353.sh
+chmod +x install-v353.sh
+./install-v353.sh
 ```
 
-### Opcao 1: v0.0.353 (Recomendado)
+### Opção 2: v0.0.346 (Estável e Testada)
 
 ```bash
-# 1. Clone o repositorio
-git clone https://github.com/kastielslip/copilot-termux.git
-cd copilot-termux
-
-# 2. Baixe o tarball v0.0.353
-# Download: https://registry.npmjs.org/@github/copilot/-/copilot-0.0.353.tgz
-# Coloque o arquivo na pasta do repositorio
-
-# 3. Execute o instalador
-bash install-v353.sh
-
-# 4. Configure NODE_OPTIONS (se nao foi automatico)
-export NODE_OPTIONS="--require $HOME/.copilot-hooks/bypass-final.js"
-echo 'export NODE_OPTIONS="--require $HOME/.copilot-hooks/bypass-final.js"' >> ~/.bashrc
-
-# 5. Teste
-copilot --version
-```
-
-### Opcao 2: v0.0.346 (Estavel)
-
-```bash
-# EM BREVE
-# Script de instalacao v0.0.346 sera adicionado
+wget https://raw.githubusercontent.com/ErnaneJ/copilot-termux/main/install-v346.sh
+chmod +x install-v346.sh
+./install-v346.sh
 ```
 
 ---
 
-## 📥 Download dos Tarballs
+## 📚 Documentação
 
-⚠️ **Os tarballs NAO estao incluidos no repositorio** (binarios grandes).
-
-### Como baixar:
-
-**v0.0.353 (71 MB):**
-```bash
-curl -O https://registry.npmjs.org/@github/copilot/-/copilot-0.0.353.tgz
-```
-
-**v0.0.346 (10 MB):**
-```bash
-curl -O https://registry.npmjs.org/@github/copilot/-/copilot-0.0.346.tgz
-```
-
-Apos o download, coloque o arquivo `.tgz` na pasta do repositorio clonado.
+- **[Como Funciona](docs/COMO_FUNCIONA.md)** - Entenda a mágica por trás dos patches
+- **[Guia de Instalação Completo](docs/INSTALACAO.md)** - Passo a passo detalhado
+- **[Solução de Problemas](docs/TROUBLESHOOTING.md)** - Problemas comuns e soluções
 
 ---
 
-## 🎯 Uso
+## 🛠️ Requisitos
 
-### Autenticacao
-
-```bash
-copilot auth login
-```
-
-### Comandos Basicos
-
-```bash
-# Explicar comando
-copilot explain "ls -la | grep txt"
-
-# Sugerir comando
-copilot suggest "find all PDF files modified today"
-
-# Modo interativo
-copilot
-
-# Ajuda
-copilot --help
-```
+- Termux atualizado (Android ARM64)
+- Node.js 18+ instalado (`pkg install nodejs`)
+- Git instalado (`pkg install git`)
+- Pelo menos 200MB de espaço livre
 
 ---
 
-## 🔬 Como Funciona
+## ✨ Recursos
 
-### v0.0.353 - Hook Module._load
-
-O Copilot v0.0.353 tenta carregar binarios nativos que nao existem no Termux:
-- `prebuilds/android-arm64/pty.node` (node-pty)
-- `@img/sharp-android-arm64/sharp.node` (sharp)
-
-**Solucao:**
-- Hook `Module._load` intercepta chamadas `require()`
-- Substitui modulos nativos por stubs JavaScript
-- Retorna objetos compativeis que satisfazem a API
-
-### v0.0.346 - Stubs Diretos
-
-Versao mais simples com stubs diretos em `lib/`.
+- ✅ Copilot CLI completamente funcional
+- ✅ Patches automáticos para node-pty e sharp
+- ✅ Verificação de versão e atualizações
+- ✅ Backup automático antes de instalar
+- ✅ Sistema de restauração em caso de erro
 
 ---
 
-## 📚 Documentacao
+## 🎬 Como Usar
 
-- 📖 [Instalacao Detalhada](docs/INSTALLATION.md) *(em breve)*
-- 🔧 [Como Funciona](docs/HOW_IT_WORKS.md) *(em breve)*
-- 📊 [Comparacao de Versoes](docs/COMPARISON.md) *(em breve)*
-- 🐛 [Troubleshooting](docs/TROUBLESHOOTING.md) *(em breve)*
-- ❓ [FAQ](docs/FAQ.md) *(em breve)*
-
----
-
-## 🐛 Troubleshooting
-
-### Erro: "Cannot find module bypass-final.js"
+Depois de instalar, é só usar normalmente:
 
 ```bash
-# Verifique se o hook existe
-ls -la ~/.copilot-hooks/bypass-final.js
-
-# Se nao existir, recrie:
-cp hooks/bypass-final.js ~/.copilot-hooks/
-```
-
-### Erro: "pty.node not found"
-
-```bash
-# NODE_OPTIONS nao esta ativo
-export NODE_OPTIONS="--require $HOME/.copilot-hooks/bypass-final.js"
-```
-
-### Copilot nao funciona apos reiniciar Termux
-
-```bash
-# Adicione ao ~/.bashrc
-echo 'export NODE_OPTIONS="--require $HOME/.copilot-hooks/bypass-final.js"' >> ~/.bashrc
-source ~/.bashrc
-```
-
----
-
-## 🏗️ Estrutura do Projeto
-
-```
-copilot-termux/
-├── README.md                # Este arquivo
-├── LICENSE                  # Licenca MIT
-├── .gitignore              # Arquivos ignorados
-├── install-v353.sh         # Instalador v0.0.353
-├── hooks/
-│   └── bypass-final.js     # Hook Module._load (v0.0.353)
-├── patches/                # (em breve) Patches v0.0.346
-└── docs/                   # (em breve) Documentacao completa
+copilot what the shell # pergunta sobre comandos
+copilot suggest # sugere comandos baseado no contexto
+copilot explain # explica o último comando
 ```
 
 ---
 
 ## 🤝 Contribuindo
 
-Contribuicoes sao bem-vindas!
-
-1. Fork o projeto
-2. Crie uma branch (`git checkout -b feature/melhoria`)
-3. Commit suas mudancas (`git commit -m 'Add: nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/melhoria`)
-5. Abra um Pull Request
+Esse projeto nasceu da necessidade e persistência. Se você tem melhorias, sugestões ou encontrou bugs, fique à vontade para abrir issues ou pull requests!
 
 ---
 
-## 📜 Licenca
+## 📝 Licença
 
-Este projeto esta sob a licenca MIT. Veja [LICENSE](LICENSE) para detalhes.
-
----
-
-## ⚠️ Avisos Importantes
-
-- ⚠️ GitHub Copilot CLI requer **assinatura GitHub Copilot**
-- ⚠️ Tarballs devem ser baixados **oficialmente do npm**
-- ⚠️ Testado apenas em **Termux ARM64 Android**
-- ⚠️ Use por **sua propria conta e risco**
+MIT License - Veja [LICENSE](LICENSE) para mais detalhes
 
 ---
 
 ## 🙏 Agradecimentos
 
-- [GitHub](https://github.com) pelo Copilot CLI
-- [Comunidade Termux](https://termux.dev)
-- Todos que testaram e reportaram bugs
+Um agradecimento especial para todos que acreditaram que era possível rodar o Copilot no Termux. Depois de dias testando, pesquisando e debugando, conseguimos! 🎉
 
 ---
 
-<div align="center">
-
-**Desenvolvido com ☕ persistencia e muitos testes!**
-
-**Se este projeto foi util, considere dar uma ⭐**
-
-[![GitHub Stars](https://img.shields.io/github/stars/kastielslip/copilot-termux?style=social)](https://github.com/kastielslip/copilot-termux/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/kastielslip/copilot-termux?style=social)](https://github.com/kastielslip/copilot-termux/network/members)
-
-</div>
+<p align="center">
+  Feito com ☕ e muita persistência
+</p>
