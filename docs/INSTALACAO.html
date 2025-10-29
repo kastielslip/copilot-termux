@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instalação - Copilot Termux</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #00ff41;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 2px solid #00ff41;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px #00ff41;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41; }
+            to { text-shadow: 0 0 20px #00ff41, 0 0 30px #00ff41, 0 0 40px #00ff41; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ff41;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+        }
+
+        .section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(0, 20, 0, 0.5);
+            border-left: 4px solid #00ff41;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateX(10px);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+
+        h2 {
+            color: #00ff41;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: #00cc33;
+            margin: 1rem 0;
+            font-size: 1.3rem;
+        }
+
+        p {
+            margin: 1rem 0;
+            color: #00dd44;
+        }
+
+        code {
+            background: #000;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            color: #00ff41;
+            border: 1px solid #00ff41;
+        }
+
+        pre {
+            background: #000;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #00ff41;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 255, 65, 0.2);
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            padding: 0.3rem 0.7rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(0, 255, 65, 0.4);
+            transform: scale(1.05);
+        }
+
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+
+        ul li:before {
+            content: "▸ ";
+            color: #00ff41;
+            font-weight: bold;
+            margin-left: -1rem;
+        }
+
+        .warning {
+            background: rgba(255, 165, 0, 0.1);
+            border-left: 4px solid #ff9900;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+        }
+
+        .success {
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 4px solid #00ff00;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+        }
+
+        .audio-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            border-radius: 50px;
+            border: 2px solid #00ff41;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+        }
+
+        .audio-control:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.8);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 1rem 0;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 65, 0.2);
+            border: 1px solid #00ff41;
+            border-radius: 5px;
+            color: #00ff41;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(0, 255, 65, 0.4);
+            transform: translateX(-5px);
+        }
+
+        .step {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 3px solid #00ff41;
+            border-radius: 5px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #00ff41;
+            color: #000;
+            padding: 0.3rem 0.7rem;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <canvas class="matrix-bg" id="matrix"></canvas>
+    
+    <header>
+        <h1>⚡ GUIA DE INSTALAÇÃO</h1>
+        <p>Instalando o GitHub Copilot CLI no Termux</p>
+    </header>
+
+    <div class="container">
+        <a href="https://github.com/kastielslip/copilot-termux" class="back-link">← Voltar ao Repositório</a>
+
+        <div class="section">
+            <h2>📋 Requisitos</h2>
+            <p>Antes de começar, certifique-se de ter:</p>
+            
+            <ul>
+                <li>Termux instalado e atualizado</li>
+                <li>Conexão com internet estável</li>
+                <li>Pelo menos 500MB de espaço livre</li>
+                <li>Conta no GitHub com acesso ao Copilot</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>🚀 Instalação Rápida</h2>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>Baixe o repositório:</strong>
+                <pre><code>git clone https://github.com/kastielslip/copilot-termux.git
+cd copilot-termux</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+            </div>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>Execute o instalador:</strong>
+                <pre><code>chmod +x install-v346.sh
+./install-v346.sh</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+            </div>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>Aguarde a instalação:</strong>
+                <p>O script vai instalar automaticamente todas as dependências e aplicar os patches necessários.</p>
+            </div>
+
+            <div class="step">
+                <span class="step-number">4</span>
+                <strong>Autentique no GitHub:</strong>
+                <pre><code>github-copilot-cli auth</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                <p>Siga as instruções na tela para fazer login com sua conta do GitHub.</p>
+            </div>
+
+            <div class="success">
+                ✅ Pronto! O Copilot está instalado e pronto para usar!
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔧 Instalação Manual (Avançado)</h2>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>Instale as dependências:</strong>
+                <pre><code>pkg update && pkg upgrade -y
+pkg install -y nodejs git</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+            </div>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>Baixe o tarball:</strong>
+                <pre><code>wget https://github.com/kastielslip/copilot-termux/releases/download/v0.0.346/github-copilot-0.0.346.tgz</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+            </div>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>Instale o pacote:</strong>
+                <pre><code>npm install -g file:github-copilot-0.0.346.tgz</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+            </div>
+
+            <div class="step">
+                <span class="step-number">4</span>
+                <strong>Aplique os patches:</strong>
+                <pre><code>cd $(npm root -g)/@github/copilot/dist
+
+# Patch node-pty
+cat > node_modules/node-pty/lib/index.js << 'EOF'
+export function spawn() { 
+  return { on: () => {}, write: () => {} }; 
+}
+EOF
+
+# Patch sharp
+cat > node_modules/sharp/lib/index.js << 'EOF'
+export default {};
+EOF</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>✅ Verificação</h2>
+            <p>Para verificar se a instalação foi bem-sucedida:</p>
+            
+            <pre><code>github-copilot-cli --version</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+            
+            <p>Você deve ver algo como:</p>
+            <pre><code>0.0.346
+Commit: 74e4d22</code></pre>
+        </div>
+
+        <div class="section">
+            <h2>⚠️ Problemas Comuns</h2>
+            
+            <div class="warning">
+                <h3>Erro: "Cannot find module 'node-pty'"</h3>
+                <p>Os patches não foram aplicados corretamente. Execute o script de instalação novamente.</p>
+            </div>
+
+            <div class="warning">
+                <h3>Erro: "ENOENT: no such file or directory"</h3>
+                <p>O tarball pode estar corrompido. Baixe novamente do repositório.</p>
+            </div>
+
+            <div class="warning">
+                <h3>Comando não encontrado</h3>
+                <p>Reinicie o Termux ou execute: <code>hash -r</code></p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📚 Próximos Passos</h2>
+            <ul>
+                <li>Leia a <a href="COMO_FUNCIONA.html" style="color: #00ff41;">documentação de funcionamento</a></li>
+                <li>Consulte o <a href="TROUBLESHOOTING.html" style="color: #00ff41;">guia de solução de problemas</a></li>
+                <li>Comece a usar: <code>github-copilot-cli what-the-shell</code></li>
+            </ul>
+        </div>
+
+        <a href="https://github.com/kastielslip/copilot-termux" class="back-link">← Voltar ao Repositório</a>
+    </div>
+
+    <div class="audio-control" onclick="toggleAudio()" id="audioBtn">
+        🔇
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_c34880ff58.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Matrix effect
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = '01アイウエオカキクケコサシスセソタチツテト';
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#00ff41';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 35);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Audio control
+        let audioPlaying = false;
+        const audio = document.getElementById('bgMusic');
+        const audioBtn = document.getElementById('audioBtn');
+
+        function toggleAudio() {
+            if (audioPlaying) {
+                audio.pause();
+                audioPlaying = false;
+                audioBtn.textContent = '🔇';
+            } else {
+                audio.play();
+                audioPlaying = true;
+                audioBtn.textContent = '🔊';
+            }
+        }
+
+        // Copy code function
+        function copyCode(button) {
+            const pre = button.parentElement;
+            const code = pre.querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = '✓ Copiado!';
+                setTimeout(() => {
+                    button.textContent = 'Copiar';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

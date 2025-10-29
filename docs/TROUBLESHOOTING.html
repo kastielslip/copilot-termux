@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troubleshooting - Copilot Termux</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a0000, #330000, #0d0d0d);
+            color: #ff4444;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 2px solid #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px #ff4444;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #ff4444, 0 0 20px #ff4444; }
+            to { text-shadow: 0 0 20px #ff4444, 0 0 30px #ff4444, 0 0 40px #ff4444; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #ff4444;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(255, 68, 68, 0.3);
+        }
+
+        .section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(20, 0, 0, 0.5);
+            border-left: 4px solid #ff4444;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateX(10px);
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+        }
+
+        h2 {
+            color: #ff4444;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: #ff6666;
+            margin: 1rem 0;
+            font-size: 1.3rem;
+        }
+
+        p {
+            margin: 1rem 0;
+            color: #ffaaaa;
+        }
+
+        code {
+            background: #000;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+        }
+
+        pre {
+            background: #000;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #ff4444;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 0.3rem 0.7rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 68, 68, 0.4);
+            transform: scale(1.05);
+        }
+
+        ul {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        ul li:before {
+            content: "⚠ ";
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .error-box {
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid #ff4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+        }
+
+        .solution-box {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+        }
+
+        .audio-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            border-radius: 50px;
+            border: 2px solid #ff4444;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+        }
+
+        .audio-control:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 1rem 0;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            border-radius: 5px;
+            color: #ff4444;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 68, 68, 0.4);
+            transform: translateX(-5px);
+        }
+
+        .accordion {
+            background: rgba(0, 0, 0, 0.5);
+            margin: 1rem 0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            background: rgba(255, 68, 68, 0.2);
+            padding: 1rem;
+            cursor: pointer;
+            border-left: 4px solid #ff4444;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: rgba(255, 68, 68, 0.3);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1rem;
+        }
+
+        .accordion-content.active {
+            max-height: 1000px;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <canvas class="matrix-bg" id="matrix"></canvas>
+    
+    <header>
+        <h1>🔧 SOLUÇÃO DE PROBLEMAS</h1>
+        <p>Resolvendo erros comuns do Copilot no Termux</p>
+    </header>
+
+    <div class="container">
+        <a href="https://github.com/kastielslip/copilot-termux" class="back-link">← Voltar ao Repositório</a>
+
+        <div class="section">
+            <h2>❌ Erros Mais Comuns</h2>
+            <p>Aqui estão os problemas mais frequentes e suas soluções:</p>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>❌ Erro: "Cannot find module 'node-pty'"</h3>
+            </div>
+            <div class="accordion-content">
+                <div class="error-box">
+                    <strong>Sintoma:</strong> O Copilot não inicia e exibe erro relacionado ao módulo node-pty.
+                </div>
+                <div class="solution-box">
+                    <strong>✅ Solução:</strong>
+                    <pre><code>cd $(npm root -g)/@github/copilot/dist
+cat > node_modules/node-pty/lib/index.js << 'EOF'
+export function spawn() { 
+  return { on: () => {}, write: () => {} }; 
+}
+EOF</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>❌ Erro: "Cannot find module 'sharp'"</h3>
+            </div>
+            <div class="accordion-content">
+                <div class="error-box">
+                    <strong>Sintoma:</strong> Erro ao carregar o módulo sharp durante a inicialização.
+                </div>
+                <div class="solution-box">
+                    <strong>✅ Solução:</strong>
+                    <pre><code>cd $(npm root -g)/@github/copilot/dist
+cat > node_modules/sharp/lib/index.js << 'EOF'
+export default {};
+EOF</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>❌ Erro: "ENOENT: no such file or directory"</h3>
+            </div>
+            <div class="accordion-content">
+                <div class="error-box">
+                    <strong>Sintoma:</strong> Arquivo não encontrado durante a instalação.
+                </div>
+                <div class="solution-box">
+                    <strong>✅ Solução:</strong>
+                    <p>1. Verifique se o tarball está no diretório correto:</p>
+                    <pre><code>ls -lh github-copilot-*.tgz</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                    <p>2. Se não existir, baixe novamente:</p>
+                    <pre><code>wget https://github.com/kastielslip/copilot-termux/releases/download/v0.0.346/github-copilot-0.0.346.tgz</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>❌ Erro: "Command not found: github-copilot-cli"</h3>
+            </div>
+            <div class="accordion-content">
+                <div class="error-box">
+                    <strong>Sintoma:</strong> O comando do Copilot não é reconhecido após instalação.
+                </div>
+                <div class="solution-box">
+                    <strong>✅ Solução:</strong>
+                    <p>1. Recarregue o cache de comandos:</p>
+                    <pre><code>hash -r</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                    <p>2. Se não funcionar, reinicie o Termux.</p>
+                    <p>3. Verifique se está instalado:</p>
+                    <pre><code>npm list -g @github/copilot</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>❌ Erro: "npm warn tarball tarball data... seems to be corrupted"</h3>
+            </div>
+            <div class="accordion-content">
+                <div class="error-box">
+                    <strong>Sintoma:</strong> O tarball está corrompido ou inválido.
+                </div>
+                <div class="solution-box">
+                    <strong>✅ Solução:</strong>
+                    <p>1. Remova o tarball corrompido:</p>
+                    <pre><code>rm github-copilot-*.tgz</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                    <p>2. Baixe novamente do repositório:</p>
+                    <pre><code>wget https://github.com/kastielslip/copilot-termux/releases/download/v0.0.346/github-copilot-0.0.346.tgz</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                    <p>3. Verifique a integridade:</p>
+                    <pre><code>tar -tzf github-copilot-0.0.346.tgz | head</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>❌ Erro: "Authentication failed"</h3>
+            </div>
+            <div class="accordion-content">
+                <div class="error-box">
+                    <strong>Sintoma:</strong> Falha ao autenticar no GitHub.
+                </div>
+                <div class="solution-box">
+                    <strong>✅ Solução:</strong>
+                    <p>1. Execute o comando de autenticação:</p>
+                    <pre><code>github-copilot-cli auth</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                    <p>2. Siga as instruções e acesse o link fornecido.</p>
+                    <p>3. Certifique-se de que sua conta tem acesso ao Copilot.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔍 Diagnóstico Avançado</h2>
+            <p>Use esses comandos para diagnosticar problemas:</p>
+
+            <h3>Verificar versão instalada:</h3>
+            <pre><code>github-copilot-cli --version</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+
+            <h3>Verificar logs de erro:</h3>
+            <pre><code>cat ~/log.txt</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+
+            <h3>Verificar instalação do Node.js:</h3>
+            <pre><code>node --version
+npm --version</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+
+            <h3>Listar pacotes globais instalados:</h3>
+            <pre><code>npm list -g --depth=0</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+        </div>
+
+        <div class="section">
+            <h2>🆘 Ainda com problemas?</h2>
+            <p>Se nenhuma das soluções acima funcionou:</p>
+            
+            <ul>
+                <li>Abra uma issue no <a href="https://github.com/kastielslip/copilot-termux/issues" style="color: #ff4444;">repositório do GitHub</a></li>
+                <li>Inclua os logs completos do erro</li>
+                <li>Informe sua versão do Termux e Node.js</li>
+                <li>Descreva os passos que levaram ao erro</li>
+            </ul>
+        </div>
+
+        <a href="https://github.com/kastielslip/copilot-termux" class="back-link">← Voltar ao Repositório</a>
+    </div>
+
+    <div class="audio-control" onclick="toggleAudio()" id="audioBtn">
+        🔇
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Matrix effect
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = 'ERROR01アイウエオカキクケコサシスセソタチツテト';
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ff4444';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 35);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Audio control
+        let audioPlaying = false;
+        const audio = document.getElementById('bgMusic');
+        const audioBtn = document.getElementById('audioBtn');
+
+        function toggleAudio() {
+            if (audioPlaying) {
+                audio.pause();
+                audioPlaying = false;
+                audioBtn.textContent = '🔇';
+            } else {
+                audio.play();
+                audioPlaying = true;
+                audioBtn.textContent = '🔊';
+            }
+        }
+
+        // Copy code function
+        function copyCode(button) {
+            const pre = button.parentElement;
+            const code = pre.querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = '✓ Copiado!';
+                setTimeout(() => {
+                    button.textContent = 'Copiar';
+                }, 2000);
+            });
+        }
+
+        // Accordion function
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const allContents = document.querySelectorAll('.accordion-content');
+            
+            allContents.forEach(item => {
+                if (item !== content) {
+                    item.classList.remove('active');
+                }
+            });
+            
+            content.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
