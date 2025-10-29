@@ -34,7 +34,7 @@ Instalação completa e funcional do GitHub Copilot CLI v0.0.346 e v0.0.353 no T
 
 ### Opção 1: v0.0.346 (Recomendado)
 
-\`\`\`bash
+```bash
 # 1. Clone o repositório
 git clone https://github.com/kastielslip/copilot-termux.git
 cd copilot-termux
@@ -44,11 +44,11 @@ bash install-v346.sh
 
 # 3. Teste
 copilot --version
-\`\`\`
+```
 
 ### Opção 2: v0.0.353 (Avançada)
 
-\`\`\`bash
+```bash
 # 1. Clone o repositório
 git clone https://github.com/kastielslip/copilot-termux.git
 cd copilot-termux
@@ -64,7 +64,7 @@ echo 'export NODE_OPTIONS="--require $HOME/.copilot-hooks/bypass-final.js"' >> ~
 
 # 5. Teste
 copilot --version
-\`\`\`
+```
 
 ## 📚 Documentação
 
@@ -76,7 +76,7 @@ copilot --version
 
 ## 🎯 Uso
 
-\`\`\`bash
+```bash
 # Autenticar no GitHub
 copilot auth login
 
@@ -88,7 +88,7 @@ copilot suggest "find all PDF files modified today"
 
 # Ajuda
 copilot --help
-\`\`\`
+```
 
 ## 🔧 Requisitos
 
