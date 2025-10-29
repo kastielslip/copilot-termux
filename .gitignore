@@ -1,0 +1,20 @@
+# Tarballs (não commitar binários grandes)
+*.tgz
+*.tar.gz
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+logs/
+
+# Temporários
+*.tmp
+*.swp
+*~
+
+# Tokens (segurança!)
+token*.txt
+*_token.txt
+.env
