@@ -87,12 +87,6 @@ Depois de instalado:
 ```bash
 # Autenticar (primeira vez)
 copilot --banner
-
-
-# Alias útil
-alias '??'='github-copilot-cli what the shell'
-alias 'git?'='github-copilot-cli git-assist'
-alias 'gh?'='github-copilot-cli gh-assist'
 ```
 
 ## 🎨 SCREENSHOTS
