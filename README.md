@@ -117,7 +117,7 @@ MIT License - Faça o que quiser, só não me culpe se explodir seu celular 😎
 
 ### *"Control is an illusion. But we still need it to code."*
 
-![Hack The Planet](https://i.imgur.com/JELwtGU.gif)
+![Hack The Planet](https://roryhay.es/assets/img/blog/furret-zero-unleashed/he-hack.gif)
 
 **Feito com ☕ e 💀 por [kastielslip](https://github.com/kastielslip)**
 
