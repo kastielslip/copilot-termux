@@ -1,6 +1,6 @@
 <div align="center">
 
-![Mr Robot](https://i.imgur.com/VQRhzQB.gif)
+![Mr Robot](https://media.giphy.com/media/dLolp8dtrYCJi/giphy.gif)
 
 # 🤖 COPILOT NO TERMUX
 ### *"Hello, friend. Bem-vindo ao futuro da programação mobile."*
