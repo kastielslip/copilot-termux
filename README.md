@@ -86,10 +86,8 @@ Depois de instalado:
 
 ```bash
 # Autenticar (primeira vez)
-github-copilot-cli auth
+copilot --banner
 
-# Usar o Copilot
-github-copilot-cli what the shell "comando que quero fazer"
 
 # Alias útil
 alias '??'='github-copilot-cli what the shell'
@@ -141,9 +139,14 @@ MIT License - Faça o que quiser, só não me culpe se explodir seu celular 😎
 Depois de instalar, é só usar normalmente:
 
 ```bash
-copilot what the shell # pergunta sobre comandos
-copilot suggest # sugere comandos baseado no contexto
-copilot explain # explica o último comando
+# pergunta sobre comandos
+copilot what the shell
+
+# sugere comandos baseado no contexto
+copilot suggest
+
+# explica o último comando
+copilot explain 
 ```
 
 ---
