@@ -1,301 +1,436 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Como Funciona - Copilot Termux</title>
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Courier New', monospace;
-    background: radial-gradient(circle at center, #000010 0%, #000000 100%);
-    color: #00ff41;
-    overflow-x: hidden;
-    line-height: 1.6;
-}
-
-/* === CANVAS MATRIX BACKGROUND === */
-#matrix {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -2;
-}
-
-/* === PARTICLE OVERLAY === */
-#particles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-}
-
-/* === HEADER === */
-header {
-    background: rgba(0, 0, 0, 0.8);
-    padding: 2rem;
-    text-align: center;
-    border-bottom: 2px solid #00ff41;
-    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
-}
-
-h1 {
-    font-size: 2.5rem;
-    text-shadow: 0 0 10px #00ff41;
-    animation: glow 2s ease-in-out infinite alternate;
-}
-
-@keyframes glow {
-    from { text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41; }
-    to { text-shadow: 0 0 30px #00ff41, 0 0 60px #00ff41; }
-}
-
-.container {
-    max-width: 1100px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid #00ff41;
-    border-radius: 10px;
-    box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
-}
-
-.section {
-    margin: 2rem 0;
-    padding: 1.5rem;
-    background: rgba(0, 20, 0, 0.5);
-    border-left: 4px solid #00ff41;
-    border-radius: 5px;
-    transition: 0.3s;
-}
-
-.section:hover {
-    transform: translateX(10px);
-    box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
-}
-
-h2 {
-    color: #00ff41;
-    margin-bottom: 1rem;
-    font-size: 1.8rem;
-}
-
-h3 {
-    color: #00cc33;
-    margin: 1rem 0;
-    font-size: 1.3rem;
-}
-
-p {
-    color: #00dd44;
-    margin: 1rem 0;
-}
-
-ul {
-    list-style: none;
-    margin: 1rem 0;
-}
-
-ul li::before {
-    content: "▸ ";
-    color: #00ff41;
-    font-weight: bold;
-}
-
-code {
-    background: #000;
-    padding: 0.2rem 0.5rem;
-    border-radius: 3px;
-    color: #00ff41;
-    border: 1px solid #00ff41;
-}
-
-pre {
-    background: #000;
-    padding: 1rem;
-    border-radius: 5px;
-    overflow-x: auto;
-    border: 1px solid #00ff41;
-}
-
-/* === TERMINAL STYLE === */
-.terminal {
-    background: #000;
-    padding: 1rem;
-    border-radius: 5px;
-    border: 2px solid #00ff41;
-    margin: 1rem 0;
-}
-.terminal::before {
-    content: "$ ";
-    color: #00ff41;
-}
-
-/* === AUDIO CONTROL === */
-.audio-control {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 1rem;
-    border-radius: 50%;
-    border: 2px solid #00ff41;
-    cursor: pointer;
-    font-size: 1.5rem;
-    transition: all 0.3s ease;
-}
-.audio-control:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(0, 255, 65, 0.8);
-}
-
-/* === LINK VOLTAR === */
-.back-link {
-    display: inline-block;
-    margin: 1rem 0;
-    padding: 0.5rem 1rem;
-    background: rgba(0, 255, 65, 0.2);
-    border: 1px solid #00ff41;
-    border-radius: 5px;
-    color: #00ff41;
-    text-decoration: none;
-    transition: 0.3s;
-}
-.back-link:hover {
-    background: rgba(0, 255, 65, 0.4);
-    transform: translateX(-5px);
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Como Funciona - Copilot Termux</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #00ff41;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #00ff41;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px #00ff41;
+            animation: glow 2s ease-in-out infinite alternate;
+            margin-bottom: 0.5rem;
+        }
+        
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41;
+            }
+            to {
+                text-shadow: 0 0 20px #00ff41, 0 0 30px #00ff41, 0 0 40px #00ff41;
+            }
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 1rem auto;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ff41;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+        }
+        
+        .section {
+            margin: 1.5rem 0;
+            padding: 1.2rem;
+            background: rgba(0, 20, 0, 0.5);
+            border-left: 4px solid #00ff41;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateX(5px);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+        
+        h2 {
+            color: #00ff41;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        h3 {
+            color: #00cc33;
+            margin: 0.8rem 0;
+            font-size: 1.2rem;
+        }
+        
+        p {
+            margin: 0.8rem 0;
+            color: #00dd44;
+        }
+        
+        code {
+            background: #000;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            color: #00ff41;
+            border: 1px solid #00ff41;
+            font-size: 0.9rem;
+        }
+        
+        pre {
+            background: #000;
+            padding: 0.8rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #00ff41;
+            margin: 0.8rem 0;
+            font-size: 0.9rem;
+        }
+        
+        ul {
+            list-style: none;
+            margin: 0.8rem 0;
+        }
+        
+        ul li {
+            margin: 0.5rem 0;
+            padding-left: 1rem;
+        }
+        
+        ul li:before {
+            content: "▸ ";
+            color: #00ff41;
+            font-weight: bold;
+        }
+        
+        .terminal {
+            background: #000;
+            padding: 0.8rem;
+            border-radius: 5px;
+            border: 2px solid #00ff41;
+            margin: 0.8rem 0;
+            font-family: 'Courier New', monospace;
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .terminal::before {
+            content: "$ ";
+            color: #00ff41;
+            position: absolute;
+            left: 0.8rem;
+        }
+        
+        .audio-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 0.8rem;
+            border-radius: 50%;
+            border: 2px solid #00ff41;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.3rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .audio-control:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.8);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin: 0.8rem 0;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 65, 0.2);
+            border: 1px solid #00ff41;
+            border-radius: 5px;
+            color: #00ff41;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .back-link:hover {
+            background: rgba(0, 255, 65, 0.4);
+            transform: translateX(-5px);
+        }
+        
+        /* Media Queries para dispositivos móveis */
+        @media (min-width: 768px) {
+            header {
+                padding: 2rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .container {
+                max-width: 1200px;
+                margin: 2rem auto;
+                padding: 2rem;
+            }
+            
+            .section {
+                margin: 2rem 0;
+                padding: 1.5rem;
+            }
+            
+            .section:hover {
+                transform: translateX(10px);
+            }
+        }
+    </style>
 </head>
-
 <body>
-<canvas id="matrix"></canvas>
-<canvas id="particles"></canvas>
-
-<header>
-    <h1>🤖 COMO FUNCIONA O COPILOT NO TERMUX</h1>
-    <p>Entendendo a arquitetura e funcionamento do sistema</p>
-</header>
-
-<div class="container">
-    <a href="https://github.com/kastielslip/copilot-termux" class="back-link">← Voltar ao Repositório</a>
-
-    <div class="section">
-        <h2>🔧 Sistema de Patches</h2>
-        <p>Os patches modificam o código do Copilot para funcionar no ambiente ARM64 do Termux:</p>
-
-        <ul>
-            <li><strong>node-pty stub</strong> — Substitui funcionalidades de PTY</li>
-            <li><strong>sharp stub</strong> — Remove dependências de processamento de imagem</li>
-            <li><strong>ESM fixes</strong> — Corrige imports e requires</li>
-            <li><strong>Path adjustments</strong> — Adapta caminhos para Termux</li>
-        </ul>
-
-<pre><code># Exemplo de stub node-pty
-export function spawn() { 
-    return { 
-        on: () => {}, 
-        write: () => {} 
+    <canvas class="matrix-bg" id="matrix"></canvas>
+    
+    <header>
+        <h1>🤖 COMO FUNCIONA O COPILOT NO TERMUX</h1>
+        <p>Entendendo a arquitetura e funcionamento do sistema</p>
+    </header>
+    
+    <div class="container">
+        <a href="https://github.com/kastielslip/copilot-termux" class="back-link">← Voltar ao Repositório</a>
+        
+        <div class="section">
+            <h2>🎯 Arquitetura do Sistema</h2>
+            <p>O GitHub Copilot CLI foi adaptado para funcionar no Termux (Android) através de patches e stubs que substituem módulos nativos incompatíveis:</p>
+            <h3>Componentes Principais:</h3>
+            <ul>
+                <li><strong>Node.js 18+</strong> - Runtime JavaScript necessário</li>
+                <li><strong>node-pty</strong> - Emulação de terminal (stubbed)</li>
+                <li><strong>sharp</strong> - Processamento de imagens (stubbed)</li>
+                <li><strong>Patches ESM</strong> - Modificações para compatibilidade ARM64</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>⚙️ Processo de Instalação</h2>
+            <p>O script automatizado realiza os seguintes passos:</p>
+            <div class="terminal">npm install -g file:github-copilot-0.0.346.tgz</div>
+            <h3>Etapas do Script:</h3>
+            <ul>
+                <li>Verifica dependências (Node.js, npm, git)</li>
+                <li>Baixa o tarball da versão especificada</li>
+                <li>Instala o pacote globalmente</li>
+                <li>Aplica patches de compatibilidade</li>
+                <li>Cria stubs para módulos nativos</li>
+                <li>Configura permissões e executáveis</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>🔧 Sistema de Patches</h2>
+            <p>Os patches modificam o código do Copilot para funcionar no ambiente ARM64 do Termux:</p>
+            <h3>Patches Aplicados:</h3>
+            <ul>
+                <li><strong>node-pty stub</strong> — Substitui funcionalidades de PTY</li>
+                <li><strong>sharp stub</strong> — Remove dependências de processamento de imagem</li>
+                <li><strong>ESM fixes</strong> — Corrige imports e requires</li>
+                <li><strong>Path adjustments</strong> — Adapta caminhos para Termux</li>
+            </ul>
+            <pre><code># Exemplo de stub node-pty
+export function spawn() {
+    return {
+        on: () => {},
+        write: () => {}
     };
-}
-</code></pre>
+}</code></pre>
+        </div>
+        
+        <div class="section">
+            <h2>🚀 Fluxo de Execução</h2>
+            <p>Quando você executa o Copilot:</p>
+            <ul>
+                <li>O comando <code>copilot</code> inicia o Node.js</li>
+                <li>Carrega os módulos patcheados</li>
+                <li>Conecta com a API do GitHub via HTTPS</li>
+                <li>Processa suas solicitações localmente</li>
+                <li>Retorna sugestões de código em tempo real</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>🛡️ Segurança e Privacidade</h2>
+            <p>O sistema mantém as mesmas garantias de segurança da versão oficial:</p>
+            <ul>
+                <li>Autenticação via token OAuth do GitHub</li>
+                <li>Comunicação criptografada (HTTPS)</li>
+                <li>Nenhum dado armazenado localmente sem permissão</li>
+                <li>Compatível com políticas de privacidade do GitHub</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>📊 Limitações Conhecidas</h2>
+            <p>Algumas funcionalidades possuem limitações no ambiente Termux:</p>
+            <ul>
+                <li>Funcionalidades de terminal avançadas podem não funcionar 100%</li>
+                <li>Processamento de imagens desabilitado (não essencial)</li>
+                <li>Performance pode variar dependendo do dispositivo</li>
+                <li>Alguns comandos podem precisar de adaptações</li>
+            </ul>
+        </div>
+        
+        <a href="https://github.com/kastielslip/copilot-termux" class="back-link">← Voltar ao Repositório</a>
     </div>
-</div>
-
-<!-- === CONTROLE DE ÁUDIO === -->
-<div class="audio-control" id="audioBtn" title="Ativar música">🔇</div>
-<audio id="bgMusic" loop preload="auto">
-    <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_4a1f93e4b6.mp3" type="audio/mpeg">
-</audio>
-
-<script>
-// === MATRIX EFFECT ===
-const matrix = document.getElementById("matrix");
-const ctx = matrix.getContext("2d");
-matrix.width = window.innerWidth;
-matrix.height = window.innerHeight;
-
-const letters = "01アイウエオカキクケコサシスセソタチツテト";
-const fontSize = 16;
-let columns = matrix.width / fontSize;
-let drops = Array(Math.floor(columns)).fill(1);
-
-function drawMatrix() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-    ctx.fillRect(0, 0, matrix.width, matrix.height);
-    ctx.fillStyle = "#00ff41";
-    ctx.font = fontSize + "px monospace";
-    for (let i = 0; i < drops.length; i++) {
-        const text = letters[Math.floor(Math.random() * letters.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > matrix.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-    }
-}
-setInterval(drawMatrix, 35);
-window.addEventListener("resize", () => {
-    matrix.width = window.innerWidth;
-    matrix.height = window.innerHeight;
-    columns = matrix.width / fontSize;
-    drops = Array(Math.floor(columns)).fill(1);
-});
-
-// === PARTICLE BACKGROUND ===
-const particlesCanvas = document.getElementById("particles");
-const pCtx = particlesCanvas.getContext("2d");
-particlesCanvas.width = window.innerWidth;
-particlesCanvas.height = window.innerHeight;
-const particles = Array(100).fill().map(() => ({
-    x: Math.random() * particlesCanvas.width,
-    y: Math.random() * particlesCanvas.height,
-    r: Math.random() * 2,
-    dx: (Math.random() - 0.5) * 0.3,
-    dy: (Math.random() - 0.5) * 0.3
-}));
-
-function drawParticles() {
-    pCtx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
-    pCtx.fillStyle = "#00ff4160";
-    particles.forEach(p => {
-        pCtx.beginPath();
-        pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        pCtx.fill();
-        p.x += p.dx;
-        p.y += p.dy;
-        if (p.x < 0 || p.x > particlesCanvas.width) p.dx *= -1;
-        if (p.y < 0 || p.y > particlesCanvas.height) p.dy *= -1;
-    });
-    requestAnimationFrame(drawParticles);
-}
-drawParticles();
-
-// === AUDIO CONTROL ===
-const audio = document.getElementById("bgMusic");
-const btn = document.getElementById("audioBtn");
-let playing = false;
-
-btn.addEventListener("click", () => {
-    if (!playing) {
-        audio.play().then(() => {
-            playing = true;
-            btn.textContent = "🔊";
-        }).catch(console.warn);
-    } else {
-        audio.pause();
-        playing = false;
-        btn.textContent = "🔇";
-    }
-});
-</script>
+    
+    <div class="audio-control" onclick="toggleAudio()" id="audioBtn">
+        🔇
+    </div>
+    
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        // Matrix effect background - otimizado para mobile
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        resizeCanvas();
+        
+        // Reduzir intensidade para melhor performance em mobile
+        const letters = '01';
+        const fontSize = Math.max(14, window.innerWidth / 40);
+        const columns = Math.floor(canvas.width / fontSize);
+        const drops = Array(Math.floor(columns)).fill(1);
+        
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#00ff41';
+            ctx.font = fontSize + 'px monospace';
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        
+        // Intervalo maior para economizar bateria
+        const matrixInterval = setInterval(drawMatrix, 50);
+        
+        // Pausar efeito matrix quando a página não estiver visível
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                clearInterval(matrixInterval);
+            } else {
+                setInterval(drawMatrix, 50);
+            }
+        });
+        
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+        });
+        
+        // Audio control
+        let audioPlaying = false;
+        const audio = document.getElementById('bgMusic');
+        const audioBtn = document.getElementById('audioBtn');
+        
+        // Tentar reproduzir automaticamente (com fallback)
+        function initAudio() {
+            // Em dispositivos móveis, precisamos de interação do usuário
+            audio.volume = 0.5;
+            
+            // Tentar reproduzir quando o usuário interagir com a página
+            document.addEventListener('click', function firstInteraction() {
+                if (!audioPlaying) {
+                    audio.play().then(() => {
+                        audioPlaying = true;
+                        audioBtn.textContent = '🔊';
+                    }).catch(e => {
+                        console.log('Reprodução automática bloqueada:', e);
+                    });
+                }
+                document.removeEventListener('click', firstInteraction);
+            });
+        }
+        
+        function toggleAudio() {
+            if (audioPlaying) {
+                audio.pause();
+                audioPlaying = false;
+                audioBtn.textContent = '🔇';
+            } else {
+                audio.play().then(() => {
+                    audioPlaying = true;
+                    audioBtn.textContent = '🔊';
+                }).catch(e => {
+                    console.log('Erro ao reproduzir áudio:', e);
+                    // Tentar carregar uma fonte alternativa
+                    audio.innerHTML = '<source src="https://assets.codepen.io/21542/howler-demo-bg-music.mp3" type="audio/mpeg">';
+                    audio.load();
+                    audio.play().then(() => {
+                        audioPlaying = true;
+                        audioBtn.textContent = '🔊';
+                    });
+                });
+            }
+        }
+        
+        // Inicializar áudio quando a página carregar
+        window.addEventListener('load', initAudio);
+        
+        // Smooth scroll para links internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
