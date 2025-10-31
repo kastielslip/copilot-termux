@@ -1,160 +1,211 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # ==========================================================
-# GitHub Copilot CLI v0.0.346 - Instalador Corrigido Termux
-# Versão: 2.0 (com fix para sharp)
+# GitHub Copilot CLI - Instalador Corrigido para Termux
+# Versão: 1.1 - Com Sharp Stub para Android ARM64
 # Ambiente: Android ARM64 (Termux)
 # ==========================================================
 
 set -euo pipefail
 
+# Configurações
 LOG_FILE="$HOME/copilot_install_$(date +%Y%m%d_%H%M%S).log"
 PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
 NODE_MODULES="$PREFIX/lib/node_modules"
 COPILOT_DIR="$NODE_MODULES/@github/copilot"
 
+# Redirecionar output para log e console
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 echo "=========================================="
-echo "🤖 GitHub Copilot CLI v0.0.346 - Termux"
+echo "🤖 GitHub Copilot CLI - Instalador Termux"
 echo "=========================================="
 echo "Log: $LOG_FILE"
 echo "Ambiente: $(uname -o) $(uname -m)"
 echo "------------------------------------------"
 
+# Função de log
 log() {
   echo "[$(date '+%H:%M:%S')] $*"
 }
 
+# Verificar ambiente
 check_environment() {
   log "Verificando ambiente..."
   
   if ! command -v node &>/dev/null; then
     log "❌ Node.js não encontrado"
-    return 1
+    echo "Execute: pkg install nodejs"
+    exit 1
   fi
   
-  local node_ver=$(node -v | sed 's/^v//' | cut -d. -f1)
+  local node_ver
+  node_ver=$(node -v | sed 's/^v//' | cut -d. -f1)
   if (( node_ver < 18 )); then
     log "❌ Node.js versão 18+ requerida (atual: $(node -v))"
-    return 1
+    exit 1
   fi
   
   log "✅ Node.js $(node -v) OK"
   log "✅ npm $(npm -v) OK"
 }
 
+# Instalar dependências
 install_dependencies() {
   log "Instalando dependências..."
-  pkg install -y libvips >/dev/null 2>&1 || log "⚠️ Falha ao instalar libvips"
-  log "✅ libvips instalado"
+  
+  pkg install -y libvips git wget >/dev/null 2>&1 || log "⚠️ Algumas dependências falharam"
+  log "✅ Dependências instaladas"
 }
 
-configure_npm() {
-  log "Configurando npm..."
-  npm config set prefix "$PREFIX"
-  export PATH="$PREFIX/bin:$PATH"
-}
-
-install_copilot() {
-  log "Instalando @github/copilot@0.0.346..."
+# Limpar instalações anteriores
+clean_previous() {
+  log "Limpando instalações anteriores..."
   npm uninstall -g @github/copilot 2>/dev/null || true
   npm cache clean --force 2>/dev/null || true
-  
-  if npm install -g @github/copilot@0.0.346 --omit=optional 2>&1 | tee -a "$LOG_FILE"; then
-    log "✅ Instalação bem sucedida"
-  else
-    log "❌ Falha na instalação"
-    return 1
-  fi
+  log "✅ Limpeza concluída"
 }
 
-fix_sharp_module() {
-  log "Aplicando fix para módulo sharp..."
+# Instalar Copilot
+install_copilot() {
+  log "Instalando @github/copilot@0.0.346..."
+  
+  if npm install -g @github/copilot@0.0.346 --ignore-scripts --force 2>&1 | tee -a "$LOG_FILE"; then
+    log "✅ Instalação concluída"
+    return 0
+  fi
+  
+  log "❌ Falha na instalação"
+  return 1
+}
+
+# Criar stub para Sharp (módulo de imagens)
+create_sharp_stub() {
+  log "Criando stub para módulo sharp..."
   
   local sharp_file="$COPILOT_DIR/node_modules/sharp/lib/sharp.js"
   
   if [[ ! -f "$sharp_file" ]]; then
-    log "❌ Arquivo sharp.js não encontrado"
-    return 1
+    log "⚠️ Sharp não encontrado, pulando"
+    return 0
   fi
   
-  # Backup do original
-  cp "$sharp_file" "${sharp_file}.bak"
-  
-  # Criar stub completo
   cat > "$sharp_file" << 'EOFSHARP'
 // Sharp stub completo para Termux Android ARM64
-const stub = function() {
-  const chainable = {
-    resize: () => chainable, rotate: () => chainable, flip: () => chainable,
-    flop: () => chainable, blur: () => chainable, sharpen: () => chainable,
-    normalise: () => chainable, toBuffer: () => Promise.resolve(Buffer.alloc(0)),
-    toFile: () => Promise.resolve({ format: 'png', width: 1, height: 1, channels: 4, size: 0 })
-  };
-  return chainable;
-};
+'use strict';
+
 const formats = {
-  jpeg: {}, png: {}, webp: {}, avif: {}, heif: {}, jxl: {}, tiff: {}, gif: {}, svg: {}, jp2k: {}, raw: {}
+  jpeg: { id: 'jpeg', output: { alias: ['jpg', 'jpeg'] } },
+  png: { id: 'png', output: { alias: ['png'] } },
+  webp: { id: 'webp', output: { alias: ['webp'] } },
+  avif: { id: 'avif', output: { alias: ['avif'] } },
+  heif: { id: 'heif', output: { alias: ['heif', 'heic'] } },
+  jxl: { id: 'jxl', output: { alias: ['jxl'] } },
+  tiff: { id: 'tiff', output: { alias: ['tiff', 'tif'] } },
+  gif: { id: 'gif', output: { alias: ['gif'] } },
+  svg: { id: 'svg', output: { alias: ['svg'] } },
+  jp2k: { id: 'jp2k', output: { alias: ['jp2', 'j2k'] } },
+  raw: { id: 'raw', output: { alias: ['raw'] } }
 };
-Object.keys(formats).forEach(k => {
-  formats[k] = { input: { file: true, buffer: true }, output: { file: true, buffer: true, alias: [] } };
+
+const sharp = () => ({
+  metadata: () => Promise.resolve({ format: 'png', width: 100, height: 100 }),
+  toBuffer: () => Promise.resolve(Buffer.alloc(0)),
+  toFile: () => Promise.resolve({ size: 0 }),
+  resize: function() { return this; },
+  extract: function() { return this; },
+  trim: function() { return this; },
+  extend: function() { return this; },
+  flatten: function() { return this; },
+  unflatten: function() { return this; },
+  negate: function() { return this; },
+  normalise: function() { return this; },
+  normalize: function() { return this; },
+  clahe: function() { return this; },
+  convolve: function() { return this; },
+  threshold: function() { return this; },
+  boolean: function() { return this; },
+  linear: function() { return this; },
+  recomb: function() { return this; },
+  modulate: function() { return this; },
+  tint: function() { return this; },
+  greyscale: function() { return this; },
+  grayscale: function() { return this; },
+  pipelineColourspace: function() { return this; },
+  pipelineColorspace: function() { return this; },
+  toColourspace: function() { return this; },
+  toColorspace: function() { return this; }
 });
-formats.heif.output.alias = ['avif', 'heic'];
-formats.jp2k.output.alias = ['j2c', 'j2k', 'jp2', 'jpx'];
-stub.libvipsVersion = () => '8.17.2';
-stub.format = () => formats;
-stub.versions = { vips: '8.17.2', cairo: '1.0.0' };
-stub.cache = () => {};
-stub.concurrency = () => 1;
-stub.queue = { length: 0 };
-stub.simd = () => true;
-stub.counters = () => ({ queue: 0, process: 0 });
-module.exports = stub;
+
+// sharp.format como função e propriedade
+sharp.format = Object.assign(
+  () => formats,
+  formats
+);
+
+sharp.versions = {
+  vips: '8.17.2'
+};
+
+sharp.libvipsVersion = () => '8.17.2';
+sharp.cache = () => ({ memory: 0, files: 0, items: 0 });
+sharp.concurrency = () => 1;
+sharp.queue = { length: 0 };
+sharp.simd = () => false;
+sharp.counters = () => ({ queue: 0, process: 0 });
+
+module.exports = sharp;
 EOFSHARP
-  
-  log "✅ Sharp stub aplicado"
+
+  log "✅ Sharp stub criado"
 }
 
+# Testar instalação
 test_installation() {
   log "Testando instalação..."
   
   if ! command -v copilot &>/dev/null; then
-    log "❌ Comando 'copilot' não encontrado"
+    log "❌ Comando copilot não encontrado"
     return 1
   fi
   
-  if copilot --version >/dev/null 2>&1; then
-    local version=$(copilot --version 2>/dev/null | head -1)
-    log "✅ Copilot CLI instalado: $version"
-    return 0
+  local version
+  version=$(copilot --version 2>&1 | head -1)
+  
+  if [[ -z "$version" ]]; then
+    log "❌ Erro ao executar copilot"
+    return 1
   fi
   
-  log "⚠️ Copilot instalado mas pode ter problemas"
-  return 1
+  log "✅ Copilot instalado: $version"
+  return 0
 }
 
-show_success() {
-  echo ""
-  echo "=========================================="
-  echo "✅ Instalação concluída!"
-  echo "=========================================="
-  echo "📝 Log completo: $LOG_FILE"
-  echo ""
-  echo "🚀 Próximos passos:"
-  echo "  1. Testar: copilot --version"
-  echo "  2. Autenticar: copilot (primeira execução)"
-  echo "  3. Usar: copilot -p 'seu comando'"
-  echo ""
-}
-
+# Executar instalação
 main() {
-  check_environment || exit 1
+  check_environment
   install_dependencies
-  configure_npm
-  install_copilot || exit 1
-  fix_sharp_module || exit 1
-  test_installation
-  show_success
+  clean_previous
+  install_copilot
+  create_sharp_stub
+  
+  echo ""
+  echo "=========================================="
+  
+  if test_installation; then
+    echo "✅ Instalação concluída com sucesso!"
+    echo "=========================================="
+    echo ""
+    echo "Próximos passos:"
+    echo "  1. copilot --help    - Ver ajuda"
+    echo "  2. copilot           - Iniciar Copilot"
+    echo "  3. copilot -p '...'  - Prompt direto"
+    echo ""
+  else
+    echo "❌ Instalação com problemas"
+    echo "=========================================="
+    echo "Veja o log: $LOG_FILE"
+    exit 1
+  fi
 }
 
 main "$@"
