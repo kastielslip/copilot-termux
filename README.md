@@ -14,18 +14,18 @@
 
 ## 🚀 Instalação Rápida (1 Comando)
 
-\`\`\`bash
+```bash
 curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install.sh | bash
-\`\`\`
+```
 
 **Ou com versão específica:**
-\`\`\`bash
+```bash
 # Versão 0.0.353 (mais recente)
 bash <(curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install.sh)
 
 # Versão 0.0.346 (estável)
 bash <(curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install.sh) 0.0.346
-\`\`\`
+```
 
 ---
 
@@ -42,7 +42,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/m
 
 ## 🎯 Como Usar
 
-\`\`\`bash
+```bash
 # Após instalação, reinicie o terminal
 exit
 
@@ -54,7 +54,7 @@ copilot
 
 # Executar prompt direto
 copilot -p "como listar arquivos no linux?"
-\`\`\`
+```
 
 ---
 
@@ -69,17 +69,17 @@ copilot -p "como listar arquivos no linux?"
 
 ## 📁 Arquivos Criados
 
-\`\`\`
+```
 ~/.copilot-hooks/bypass-final.js  # Bypass para módulos nativos
 ~/.bashrc                          # NODE_OPTIONS configurado
 ~/copilot-install-*.log            # Logs de instalação
-\`\`\`
+```
 
 ---
 
 ## 🐛 Troubleshooting
 
-\`\`\`bash
+```bash
 # Verificar NODE_OPTIONS
 echo $NODE_OPTIONS
 
@@ -88,7 +88,7 @@ source ~/.bashrc
 
 # Ver logs
 ls ~/copilot-install-*.log
-\`\`\`
+```
 
 ---
 
