@@ -210,24 +210,28 @@
             </ul>
         </div>
 
-        <div class="section">
-            <h2>🔧 Sistema de Patches</h2>
-            <p>Os patches modificam o código do Copilot para funcionar no ambiente ARM64 do Termux:</p>
+<div class="section">
+    <h2>🔧 Sistema de Patches</h2>
+    <p>Os patches modificam o código do Copilot para funcionar no ambiente ARM64 do Termux:</p>
 
-            <h3>Patches Aplicados:</h3>
-            <ul>
-                <li><strong>node-pty stub</strong> - Substitui funcionalidades de PTY</li>
-                <li><strong>sharp stub</strong> - Remove dependências de processamento de imagem</li>
-                <li><strong>ESM fixes</strong> - Corrige imports e requires</li>
-                <li><strong>Path adjustments</strong> - Adapta caminhos para Termux</li>
-            </ul>
+    <h3>Patches Aplicados:</h3>
+    <ul>
+        <li><strong>node-pty stub</strong> — Substitui funcionalidades de PTY</li>
+        <li><strong>sharp stub</strong> — Remove dependências de processamento de imagem</li>
+        <li><strong>ESM fixes</strong> — Corrige imports e requires</li>
+        <li><strong>Path adjustments</strong> — Adapta caminhos para Termux</li>
+    </ul>
 
-            <pre><code># Exemplo de stub node-pty</code>
-   <pre><code>           
-export function spawn() { return { on: () => {}, write: () => {} };
-                
-}</code></pre>
-        </div>
+    <pre><code># Exemplo de stub node-pty
+export function spawn() { 
+    return { 
+        on: () => {}, 
+        write: () => {} 
+    };
+}
+</code></pre>
+</div>
+
 
         <div class="section">
             <h2>🚀 Fluxo de Execução</h2>
