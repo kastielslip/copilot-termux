@@ -213,85 +213,89 @@ export function spawn() {
 </div>
 
 <!-- === CONTROLE DE ÁUDIO === -->
-<div class="audio-control" onclick="toggleAudio()" id="audioBtn">🔇</div>
-
+<div class="audio-control" id="audioBtn" title="Ativar música">🔇</div>
 <audio id="bgMusic" loop preload="auto">
-  <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_4a1f93e4b6.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_4a1f93e4b6.mp3" type="audio/mpeg">
 </audio>
 
 <script>
 // === MATRIX EFFECT ===
 const matrix = document.getElementById("matrix");
 const ctx = matrix.getContext("2d");
-matrix.width = innerWidth;
-matrix.height = innerHeight;
+matrix.width = window.innerWidth;
+matrix.height = window.innerHeight;
+
 const letters = "01アイウエオカキクケコサシスセソタチツテト";
 const fontSize = 16;
 let columns = matrix.width / fontSize;
 let drops = Array(Math.floor(columns)).fill(1);
+
 function drawMatrix() {
-  ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-  ctx.fillRect(0, 0, matrix.width, matrix.height);
-  ctx.fillStyle = "#00ff41";
-  ctx.font = fontSize + "px monospace";
-  for (let i = 0; i < drops.length; i++) {
-    const text = letters[Math.floor(Math.random() * letters.length)];
-    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-    if (drops[i] * fontSize > matrix.height && Math.random() > 0.975) drops[i] = 0;
-    drops[i]++;
-  }
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, matrix.width, matrix.height);
+    ctx.fillStyle = "#00ff41";
+    ctx.font = fontSize + "px monospace";
+    for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > matrix.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+    }
 }
 setInterval(drawMatrix, 35);
-addEventListener("resize", () => {
-  matrix.width = innerWidth;
-  matrix.height = innerHeight;
-  columns = matrix.width / fontSize;
-  drops = Array(Math.floor(columns)).fill(1);
+window.addEventListener("resize", () => {
+    matrix.width = window.innerWidth;
+    matrix.height = window.innerHeight;
+    columns = matrix.width / fontSize;
+    drops = Array(Math.floor(columns)).fill(1);
 });
 
-// === PARTICLE EFFECT ===
+// === PARTICLE BACKGROUND ===
 const particlesCanvas = document.getElementById("particles");
 const pCtx = particlesCanvas.getContext("2d");
-particlesCanvas.width = innerWidth;
-particlesCanvas.height = innerHeight;
+particlesCanvas.width = window.innerWidth;
+particlesCanvas.height = window.innerHeight;
 const particles = Array(100).fill().map(() => ({
-  x: Math.random() * particlesCanvas.width,
-  y: Math.random() * particlesCanvas.height,
-  r: Math.random() * 2,
-  dx: (Math.random() - 0.5) * 0.3,
-  dy: (Math.random() - 0.5) * 0.3
+    x: Math.random() * particlesCanvas.width,
+    y: Math.random() * particlesCanvas.height,
+    r: Math.random() * 2,
+    dx: (Math.random() - 0.5) * 0.3,
+    dy: (Math.random() - 0.5) * 0.3
 }));
+
 function drawParticles() {
-  pCtx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
-  pCtx.fillStyle = "#00ff4160";
-  for (let p of particles) {
-    pCtx.beginPath();
-    pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    pCtx.fill();
-    p.x += p.dx;
-    p.y += p.dy;
-    if (p.x < 0 || p.x > particlesCanvas.width) p.dx *= -1;
-    if (p.y < 0 || p.y > particlesCanvas.height) p.dy *= -1;
-  }
-  requestAnimationFrame(drawParticles);
+    pCtx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+    pCtx.fillStyle = "#00ff4160";
+    particles.forEach(p => {
+        pCtx.beginPath();
+        pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        pCtx.fill();
+        p.x += p.dx;
+        p.y += p.dy;
+        if (p.x < 0 || p.x > particlesCanvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > particlesCanvas.height) p.dy *= -1;
+    });
+    requestAnimationFrame(drawParticles);
 }
 drawParticles();
 
-// === AUDIO CONTROL (FUNCIONA COMO O VERMELHO) ===
-let audioPlaying = false;
+// === AUDIO CONTROL ===
 const audio = document.getElementById("bgMusic");
-const audioBtn = document.getElementById("audioBtn");
-function toggleAudio() {
-  if (audioPlaying) {
-    audio.pause();
-    audioPlaying = false;
-    audioBtn.textContent = "🔇";
-  } else {
-    audio.play(); // chamado diretamente no clique
-    audioPlaying = true;
-    audioBtn.textContent = "🔊";
-  }
-}
+const btn = document.getElementById("audioBtn");
+let playing = false;
+
+btn.addEventListener("click", () => {
+    if (!playing) {
+        audio.play().then(() => {
+            playing = true;
+            btn.textContent = "🔊";
+        }).catch(console.warn);
+    } else {
+        audio.pause();
+        playing = false;
+        btn.textContent = "🔇";
+    }
+});
 </script>
 </body>
 </html>
