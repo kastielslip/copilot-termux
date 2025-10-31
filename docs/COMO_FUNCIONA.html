@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Como Funciona - Copilot Termux</title>
+    <title>Copilot Termux - fsociety Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -11,106 +12,251 @@
             box-sizing: border-box;
         }
         
-        body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-            color: #00ff41;
-            line-height: 1.6;
-            overflow-x: hidden;
+        :root {
+            --hacker-green: #00ff41;
+            --fsociety-red: #ff003c;
+            --dark-bg: #0a0a0a;
+            --card-bg: rgba(15, 15, 15, 0.92);
+            --text-color: #e0e0e0;
+            --terminal-bg: #000000;
         }
         
-        .matrix-bg {
+        body {
+            font-family: 'Courier New', 'Consolas', monospace;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        #video-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            opacity: 0.3;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 0, 60, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 65, 0.1) 0%, transparent 50%),
+                linear-gradient(to bottom, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.8) 100%);
             z-index: -1;
-            opacity: 0.1;
+        }
+        
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                rgba(0, 255, 65, 0.03) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 0;
+            pointer-events: none;
         }
         
         header {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             padding: 1.5rem;
             text-align: center;
-            border-bottom: 2px solid #00ff41;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+            border-bottom: 1px solid var(--fsociety-red);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(255, 0, 60, 0.2);
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--hacker-green), transparent);
+            animation: scanline 3s linear infinite;
+        }
+        
+        @keyframes scanline {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
         
         h1 {
             font-size: 1.8rem;
-            text-shadow: 0 0 10px #00ff41;
-            animation: glow 2s ease-in-out infinite alternate;
+            color: var(--hacker-green);
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.7);
             margin-bottom: 0.5rem;
+            letter-spacing: 3px;
+            font-weight: 700;
         }
         
-        @keyframes glow {
-            from {
-                text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41;
-            }
-            to {
-                text-shadow: 0 0 20px #00ff41, 0 0 30px #00ff41, 0 0 40px #00ff41;
-            }
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+        
+        .fsociety-logo {
+            font-family: 'Courier New', monospace;
+            color: var(--fsociety-red);
+            font-weight: bold;
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
         }
         
         .container {
             max-width: 100%;
             margin: 1rem auto;
             padding: 1rem;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid #00ff41;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+            position: relative;
+            z-index: 1;
         }
         
-        .section {
-            margin: 1.5rem 0;
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 0, 60, 0.4);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
             padding: 1.2rem;
-            background: rgba(0, 20, 0, 0.5);
-            border-left: 4px solid #00ff41;
-            border-radius: 5px;
+            backdrop-filter: blur(5px);
             transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
         }
         
-        .section:hover {
-            transform: translateX(5px);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--hacker-green), transparent);
+        }
+        
+        .card:hover {
+            border-color: var(--hacker-green);
+            box-shadow: 
+                0 5px 25px rgba(0, 255, 65, 0.3),
+                inset 0 0 20px rgba(0, 255, 65, 0.1);
+            transform: translateY(-3px);
         }
         
         h2 {
-            color: #00ff41;
+            color: var(--hacker-green);
             margin-bottom: 1rem;
             font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+            padding-bottom: 0.5rem;
         }
         
         h3 {
-            color: #00cc33;
-            margin: 0.8rem 0;
+            color: var(--fsociety-red);
+            margin: 1rem 0 0.5rem;
             font-size: 1.2rem;
+            font-weight: 600;
         }
         
         p {
             margin: 0.8rem 0;
-            color: #00dd44;
+            color: var(--text-color);
+            line-height: 1.7;
+        }
+        
+        .code-container {
+            background: var(--terminal-bg);
+            border: 1px solid rgba(0, 255, 65, 0.4);
+            border-radius: 6px;
+            margin: 1rem 0;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
+            position: relative;
+        }
+        
+        .code-header {
+            background: linear-gradient(90deg, #1a1a1a, #2a2a2a);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--hacker-green);
+        }
+        
+        .code-header .file-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .copy-btn {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--hacker-green);
+            color: var(--hacker-green);
+            padding: 0.3rem 0.6rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(0, 255, 65, 0.2);
+            box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
+        }
+        
+        .copy-btn.copied {
+            background: rgba(0, 255, 65, 0.3);
+            color: #000;
+        }
+        
+        .code-content {
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            background: #000;
         }
         
         code {
-            background: #000;
-            padding: 0.2rem 0.4rem;
-            border-radius: 3px;
-            color: #00ff41;
-            border: 1px solid #00ff41;
-            font-size: 0.9rem;
+            color: var(--hacker-green);
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
         }
         
+        .code-content .keyword { color: #ff79c6; }
+        .code-content .function { color: #50fa7b; }
+        .code-content .string { color: #f1fa8c; }
+        .code-content .comment { color: #6272a4; font-style: italic; }
+        .code-content .number { color: #bd93f9; }
+        .code-content .operator { color: #ff5555; }
+        
         pre {
-            background: #000;
-            padding: 0.8rem;
-            border-radius: 5px;
-            overflow-x: auto;
-            border: 1px solid #00ff41;
-            margin: 0.8rem 0;
-            font-size: 0.9rem;
+            margin: 0;
+            white-space: pre-wrap;
         }
         
         ul {
@@ -119,32 +265,76 @@
         }
         
         ul li {
-            margin: 0.5rem 0;
-            padding-left: 1rem;
+            margin: 0.7rem 0;
+            padding-left: 1.5rem;
+            position: relative;
         }
         
         ul li:before {
-            content: "▸ ";
-            color: #00ff41;
+            content: ">";
+            color: var(--fsociety-red);
             font-weight: bold;
+            position: absolute;
+            left: 0;
         }
         
         .terminal {
-            background: #000;
-            padding: 0.8rem;
-            border-radius: 5px;
-            border: 2px solid #00ff41;
-            margin: 0.8rem 0;
+            background: var(--terminal-bg);
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--hacker-green);
+            margin: 1rem 0;
             font-family: 'Courier New', monospace;
             position: relative;
-            padding-left: 2rem;
+            overflow-x: auto;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
         }
         
         .terminal::before {
-            content: "$ ";
-            color: #00ff41;
+            content: "root@elliot:~$";
+            color: var(--fsociety-red);
             position: absolute;
-            left: 0.8rem;
+            left: 1rem;
+            top: 1rem;
+            font-weight: bold;
+        }
+        
+        .terminal-content {
+            margin-left: 120px;
+            color: var(--hacker-green);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0.8rem 0;
+            padding: 0.7rem 1.4rem;
+            background: rgba(255, 0, 60, 0.1);
+            border: 1px solid var(--fsociety-red);
+            border-radius: 5px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn:hover {
+            background: rgba(255, 0, 60, 0.2);
+            box-shadow: 0 0 15px rgba(255, 0, 60, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .btn.github {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--hacker-green);
+        }
+        
+        .btn.github:hover {
+            background: rgba(0, 255, 65, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
         }
         
         .audio-control {
@@ -152,41 +342,137 @@
             bottom: 20px;
             right: 20px;
             background: rgba(0, 0, 0, 0.8);
-            padding: 0.8rem;
-            border-radius: 50%;
-            border: 2px solid #00ff41;
+            padding: 1rem;
+            border-radius: 50px;
+            border: 2px solid var(--fsociety-red);
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 1.3rem;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 1.5rem;
             z-index: 100;
         }
         
         .audio-control:hover {
             transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.8);
+            box-shadow: 0 0 20px rgba(255, 0, 60, 0.8);
         }
         
-        .back-link {
-            display: inline-block;
-            margin: 0.8rem 0;
-            padding: 0.5rem 1rem;
-            background: rgba(0, 255, 65, 0.2);
-            border: 1px solid #00ff41;
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 1rem;
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 1px solid rgba(0, 255, 65, 0.3);
+            font-size: 0.8rem;
+            color: var(--hacker-green);
+            font-family: 'Courier New', monospace;
+            position: relative;
+        }
+        
+        .status-bar::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--fsociety-red), transparent);
+        }
+        
+        .desktop-warning {
+            background: rgba(255, 0, 60, 0.1);
+            border: 1px solid var(--fsociety-red);
             border-radius: 5px;
-            color: #00ff41;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+            display: none;
         }
         
-        .back-link:hover {
-            background: rgba(0, 255, 65, 0.4);
-            transform: translateX(-5px);
+        .desktop-warning.show {
+            display: block;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 60, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 0, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 60, 0); }
+        }
+        
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--fsociety-red);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 15px, 0); }
+            5% { clip: rect(32px, 9999px, 30px, 0); }
+            10% { clip: rect(16px, 9999px, 34px, 0); }
+            15% { clip: rect(42px, 9999px, 32px, 0); }
+            20% { clip: rect(12px, 9999px, 31px, 0); }
+            25% { clip: rect(14px, 9999px, 27px, 0); }
+            30% { clip: rect(2px, 9999px, 30px, 0); }
+            35% { clip: rect(25px, 9999px, 6px, 0); }
+            40% { clip: rect(25px, 9999px, 24px, 0); }
+            45% { clip: rect(37px, 9999px, 39px, 0); }
+            50% { clip: rect(8px, 9999px, 36px, 0); }
+            55% { clip: rect(10px, 9999px, 22px, 0); }
+            60% { clip: rect(6px, 9999px, 16px, 0); }
+            65% { clip: rect(19px, 9999px, 11px, 0); }
+            70% { clip: rect(16px, 9999px, 10px, 0); }
+            75% { clip: rect(19px, 9999px, 33px, 0); }
+            80% { clip: rect(20px, 9999px, 6px, 0); }
+            85% { clip: rect(39px, 9999px, 22px, 0); }
+            90% { clip: rect(9px, 9999px, 18px, 0); }
+            95% { clip: rect(6px, 9999px, 37px, 0); }
+            100% { clip: rect(23px, 9999px, 6px, 0); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { clip: rect(31px, 9999px, 15px, 0); }
+            5% { clip: rect(32px, 9999px, 30px, 0); }
+            10% { clip: rect(16px, 9999px, 34px, 0); }
+            15% { clip: rect(42px, 9999px, 32px, 0); }
+            20% { clip: rect(12px, 9999px, 31px, 0); }
+            25% { clip: rect(14px, 9999px, 27px, 0); }
+            30% { clip: rect(2px, 9999px, 30px, 0); }
+            35% { clip: rect(25px, 9999px, 6px, 0); }
+            40% { clip: rect(25px, 9999px, 24px, 0); }
+            45% { clip: rect(37px, 9999px, 39px, 0); }
+            50% { clip: rect(8px, 9999px, 36px, 0); }
+            55% { clip: rect(10px, 9999px, 22px, 0); }
+            60% { clip: rect(6px, 9999px, 16px, 0); }
+            65% { clip: rect(19px, 9999px, 11px, 0); }
+            70% { clip: rect(16px, 9999px, 10px, 0); }
+            75% { clip: rect(19px, 9999px, 33px, 0); }
+            80% { clip: rect(20px, 9999px, 6px, 0); }
+            85% { clip: rect(39px, 9999px, 22px, 0); }
+            90% { clip: rect(9px, 9999px, 18px, 0); }
+            95% { clip: rect(6px, 9999px, 37px, 0); }
+            100% { clip: rect(23px, 9999px, 6px, 0); }
         }
         
         /* Media Queries para dispositivos móveis */
@@ -205,32 +491,68 @@
                 padding: 2rem;
             }
             
-            .section {
-                margin: 2rem 0;
-                padding: 1.5rem;
+            .card {
+                padding: 1.8rem;
+                margin-bottom: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
             }
             
-            .section:hover {
-                transform: translateX(10px);
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            .card {
+                padding: 1rem;
+            }
+            
+            .terminal::before {
+                position: static;
+                margin-bottom: 0.5rem;
+                display: block;
+            }
+            
+            .terminal-content {
+                margin-left: 0;
             }
         }
     </style>
 </head>
 <body>
-    <canvas class="matrix-bg" id="matrix"></canvas>
+    <video id="video-bg" autoplay muted loop playsinline>
+        <source src="https://assets.codepen.io/3361033/mr-robot-terminal-scene.mp4" type="video/mp4">
+        <!-- Fallback para caso o vídeo não carregue -->
+    </video>
+    <div class="overlay"></div>
+    <div class="scanlines"></div>
     
     <header>
-        <h1>🤖 COMO FUNCIONA O COPILOT NO TERMUX</h1>
-        <p>Entendendo a arquitetura e funcionamento do sistema</p>
+        <h1 class="glitch" data-text="COPILOT TERMUX">COPILOT TERMUX</h1>
+        <p class="subtitle">SISTEMA ADAPTADO PARA ANDROID - F_SOCIETY EDITION</p>
+        <div class="fsociety-logo">[fsociety://root.access.granted]</div>
     </header>
     
     <div class="container">
-        <a href="https://github.com/kastielslip/copilot-termux" class="back-link">← Voltar ao Repositório</a>
+        <!-- Aviso de modo desktop -->
+        <div class="desktop-warning" id="desktopWarning">
+            <h3><i class="fas fa-desktop"></i> MODO DESKTOP DETECTADO</h3>
+            <p>Você está acessando de um computador desktop.</p>
+            <p><strong>Este sistema foi otimizado para dispositivos Android com Termux.</strong></p>
+            <p>Algumas funcionalidades podem não estar disponíveis no desktop.</p>
+        </div>
         
-        <div class="section">
-            <h2>🎯 Arquitetura do Sistema</h2>
+        <a href="https://github.com/kastielslip/copilot-termux" class="btn github">
+            <i class="fab fa-github"></i> ACESSAR REPOSITÓRIO
+        </a>
+        
+        <div class="card">
+            <h2><i class="fas fa-project-diagram"></i> ARQUITETURA DO SISTEMA</h2>
             <p>O GitHub Copilot CLI foi adaptado para funcionar no Termux (Android) através de patches e stubs que substituem módulos nativos incompatíveis:</p>
-            <h3>Componentes Principais:</h3>
+            <h3>COMPONENTES PRINCIPAIS:</h3>
             <ul>
                 <li><strong>Node.js 18+</strong> - Runtime JavaScript necessário</li>
                 <li><strong>node-pty</strong> - Emulação de terminal (stubbed)</li>
@@ -239,11 +561,14 @@
             </ul>
         </div>
         
-        <div class="section">
-            <h2>⚙️ Processo de Instalação</h2>
+        <div class="card">
+            <h2><i class="fas fa-cogs"></i> PROCESSO DE INSTALAÇÃO</h2>
             <p>O script automatizado realiza os seguintes passos:</p>
-            <div class="terminal">npm install -g file:github-copilot-0.0.346.tgz</div>
-            <h3>Etapas do Script:</h3>
+            <div class="terminal">
+                <div class="terminal-content">npm install -g file:github-copilot-0.0.346.tgz</div>
+            </div>
+            <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY COMMAND</button>
+            <h3>ETAPAS DO SCRIPT:</h3>
             <ul>
                 <li>Verifica dependências (Node.js, npm, git)</li>
                 <li>Baixa o tarball da versão especificada</li>
@@ -254,27 +579,43 @@
             </ul>
         </div>
         
-        <div class="section">
-            <h2>🔧 Sistema de Patches</h2>
+        <div class="card">
+            <h2><i class="fas fa-tools"></i> SISTEMA DE PATCHES</h2>
             <p>Os patches modificam o código do Copilot para funcionar no ambiente ARM64 do Termux:</p>
-            <h3>Patches Aplicados:</h3>
+            <h3>PATCHES APLICADOS:</h3>
             <ul>
                 <li><strong>node-pty stub</strong> — Substitui funcionalidades de PTY</li>
                 <li><strong>sharp stub</strong> — Remove dependências de processamento de imagem</li>
                 <li><strong>ESM fixes</strong> — Corrige imports e requires</li>
                 <li><strong>Path adjustments</strong> — Adapta caminhos para Termux</li>
             </ul>
-            <pre><code># Exemplo de stub node-pty
-export function spawn() {
-    return {
-        on: () => {},
-        write: () => {}
+            
+            <div class="code-container">
+                <div class="code-header">
+                    <div class="file-info">
+                        <i class="fas fa-file-code"></i>
+                        <span>node-pty-stub.js</span>
+                    </div>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <div class="code-content">
+                    <pre><code><span class="keyword">export</span> <span class="keyword">function</span> <span class="function">spawn</span>() {
+    <span class="keyword">return</span> {
+        <span class="function">on</span>: () => {},
+        <span class="function">write</span>: () => {}
     };
-}</code></pre>
+}
+
+<span class="comment">// Stub para compatibilidade com Termux</span>
+<span class="keyword">export</span> <span class="keyword">const</span> <span class="function">fork</span> = <span class="keyword">function</span>() {
+    <span class="keyword">return</span> <span class="function">spawn</span>();
+};</code></pre>
+                </div>
+            </div>
         </div>
         
-        <div class="section">
-            <h2>🚀 Fluxo de Execução</h2>
+        <div class="card">
+            <h2><i class="fas fa-rocket"></i> FLUXO DE EXECUÇÃO</h2>
             <p>Quando você executa o Copilot:</p>
             <ul>
                 <li>O comando <code>copilot</code> inicia o Node.js</li>
@@ -283,10 +624,32 @@ export function spawn() {
                 <li>Processa suas solicitações localmente</li>
                 <li>Retorna sugestões de código em tempo real</li>
             </ul>
+            
+            <div class="code-container">
+                <div class="code-header">
+                    <div class="file-info">
+                        <i class="fas fa-terminal"></i>
+                        <span>execução.terminal</span>
+                    </div>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <div class="code-content">
+                    <pre><code><span class="keyword">$</span> copilot <span class="function">sugerir</span> <span class="string">"função para validar email"</span>
+
+<span class="comment">> Analisando contexto...</span>
+<span class="comment">> Conectando com GitHub API...</span>
+<span class="comment">> Gerando sugestões...</span>
+
+<span class="function">function</span> <span class="function">validarEmail</span>(email) {
+    <span class="keyword">const</span> regex = <span class="string">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span>;
+    <span class="keyword">return</span> regex.<span class="function">test</span>(email);
+}</code></pre>
+                </div>
+            </div>
         </div>
         
-        <div class="section">
-            <h2>🛡️ Segurança e Privacidade</h2>
+        <div class="card">
+            <h2><i class="fas fa-shield-alt"></i> SEGURANÇA E PRIVACIDADE</h2>
             <p>O sistema mantém as mesmas garantias de segurança da versão oficial:</p>
             <ul>
                 <li>Autenticação via token OAuth do GitHub</li>
@@ -296,8 +659,8 @@ export function spawn() {
             </ul>
         </div>
         
-        <div class="section">
-            <h2>📊 Limitações Conhecidas</h2>
+        <div class="card">
+            <h2><i class="fas fa-exclamation-triangle"></i> LIMITAÇÕES CONHECIDAS</h2>
             <p>Algumas funcionalidades possuem limitações no ambiente Termux:</p>
             <ul>
                 <li>Funcionalidades de terminal avançadas podem não funcionar 100%</li>
@@ -307,117 +670,218 @@ export function spawn() {
             </ul>
         </div>
         
-        <a href="https://github.com/kastielslip/copilot-termux" class="back-link">← Voltar ao Repositório</a>
+        <a href="https://github.com/kastielslip/copilot-termux" class="btn github">
+            <i class="fab fa-github"></i> ACESSAR REPOSITÓRIO
+        </a>
     </div>
     
     <div class="audio-control" onclick="toggleAudio()" id="audioBtn">
         🔇
     </div>
     
+    <div class="status-bar">
+        <div class="status-item">SISTEMA: <span id="system-status">OPERACIONAL</span></div>
+        <div class="status-item">fsociety@root:~$ _</div>
+    </div>
+    
+    <!-- Áudio com fonte funcional do seu código -->
     <audio id="bgMusic" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
     </audio>
     
     <script>
-        // Matrix effect background - otimizado para mobile
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        
-        resizeCanvas();
-        
-        // Reduzir intensidade para melhor performance em mobile
-        const letters = '01';
-        const fontSize = Math.max(14, window.innerWidth / 40);
-        const columns = Math.floor(canvas.width / fontSize);
-        const drops = Array(Math.floor(columns)).fill(1);
-        
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Inicializar elementos quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar vídeo de fundo
+            const videoBg = document.getElementById('video-bg');
             
-            ctx.fillStyle = '#00ff41';
-            ctx.font = fontSize + 'px monospace';
+            // Tentar carregar o vídeo
+            videoBg.play().catch(e => {
+                console.log('Vídeo não pôde ser reproduzido automaticamente:', e);
+                document.body.style.background = "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)";
+            });
             
-            for (let i = 0; i < drops.length; i++) {
-                const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
-        }
-        
-        // Intervalo maior para economizar bateria
-        const matrixInterval = setInterval(drawMatrix, 50);
-        
-        // Pausar efeito matrix quando a página não estiver visível
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                clearInterval(matrixInterval);
+            // Detectar modo desktop
+            detectDesktopMode();
+            
+            // Adicionar efeito de digitação no status
+            typeWriter();
+            
+            // Inicializar efeitos de digitação nos terminais
+            initTerminalEffects();
+        });
+
+        // Detecção simples de modo desktop
+        function detectDesktopMode() {
+            const warningElement = document.getElementById('desktopWarning');
+            
+            // Detecção mais precisa de desktop
+            const isDesktop = !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isDesktop) {
+                warningElement.classList.add('show');
+                console.log('Modo desktop detectado');
             } else {
-                setInterval(drawMatrix, 50);
+                console.log('Dispositivo móvel detectado');
             }
-        });
+        }
         
-        window.addEventListener('resize', () => {
-            resizeCanvas();
-        });
-        
-        // Audio control
-        let audioPlaying = false;
-        const audio = document.getElementById('bgMusic');
-        const audioBtn = document.getElementById('audioBtn');
-        
-        // Tentar reproduzir automaticamente (com fallback)
-        function initAudio() {
-            // Em dispositivos móveis, precisamos de interação do usuário
-            audio.volume = 0.5;
+        // Efeito de digitação para o status
+        function typeWriter() {
+            const statusElement = document.getElementById('system-status');
+            const originalText = statusElement.textContent;
+            statusElement.textContent = '';
             
-            // Tentar reproduzir quando o usuário interagir com a página
-            document.addEventListener('click', function firstInteraction() {
-                if (!audioPlaying) {
-                    audio.play().then(() => {
-                        audioPlaying = true;
-                        audioBtn.textContent = '🔊';
-                    }).catch(e => {
-                        console.log('Reprodução automática bloqueada:', e);
-                    });
+            let i = 0;
+            const typing = setInterval(() => {
+                if (i < originalText.length) {
+                    statusElement.textContent += originalText.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typing);
+                    setInterval(() => {
+                        statusElement.textContent = statusElement.textContent.endsWith('_') 
+                            ? originalText 
+                            : originalText + '_';
+                    }, 500);
                 }
-                document.removeEventListener('click', firstInteraction);
+            }, 100);
+        }
+        
+        // Efeitos de digitação nos terminais
+        function initTerminalEffects() {
+            document.querySelectorAll('.terminal-content').forEach(terminal => {
+                const originalText = terminal.textContent;
+                terminal.textContent = '';
+                
+                let i = 0;
+                const typing = setInterval(() => {
+                    if (i < originalText.length) {
+                        terminal.textContent += originalText.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(typing);
+                    }
+                }, 30);
             });
         }
         
+        // ========== SISTEMA DE ÁUDIO FUNCIONAL ==========
+        let audioPlaying = false;
+        const audio = document.getElementById('bgMusic');
+        const audioBtn = document.getElementById('audioBtn');
+
+        // Sistema de áudio simples e funcional
         function toggleAudio() {
             if (audioPlaying) {
                 audio.pause();
                 audioPlaying = false;
                 audioBtn.textContent = '🔇';
             } else {
-                audio.play().then(() => {
-                    audioPlaying = true;
-                    audioBtn.textContent = '🔊';
-                }).catch(e => {
-                    console.log('Erro ao reproduzir áudio:', e);
-                    // Tentar carregar uma fonte alternativa
-                    audio.innerHTML = '<source src="https://assets.codepen.io/21542/howler-demo-bg-music.mp3" type="audio/mpeg">';
+                audio.play().catch(e => {
+                    console.log('Erro ao reproduzir áudio, tentando fallback:', e);
+                    // Tentar carregar uma fonte alternativa se a primeira falhar
+                    audio.innerHTML = '<source src="https://assets.codepen.io/3361033/ambient-synth.mp3" type="audio/mpeg">';
                     audio.load();
                     audio.play().then(() => {
                         audioPlaying = true;
                         audioBtn.textContent = '🔊';
+                    }).catch(e2 => {
+                        console.log('Fallback também falhou:', e2);
                     });
                 });
+                audioPlaying = true;
+                audioBtn.textContent = '🔊';
+            }
+        }
+
+        // Tentar reproduzir automaticamente (pode ser bloqueado por navegadores)
+        audio.play().then(() => {
+            audioPlaying = true;
+            audioBtn.textContent = '🔊';
+        }).catch(e => {
+            console.log('Reprodução automática bloqueada, aguardando interação do usuário');
+            audioPlaying = false;
+            audioBtn.textContent = '🔇';
+        });
+
+        // Configurar volume
+        audio.volume = 0.3;
+        // ========== FIM DO SISTEMA DE ÁUDIO ==========
+        
+        // Função para copiar código dos containers
+        function copyCode(button) {
+            const codeContainer = button.closest('.code-container');
+            const codeElement = codeContainer.querySelector('code');
+            const textToCopy = codeElement.textContent;
+            
+            copyToClipboard(textToCopy, button);
+        }
+        
+        // Função para copiar comando do terminal
+        function copyTerminalCommand(button) {
+            const terminal = button.previousElementSibling;
+            const commandText = terminal.querySelector('.terminal-content').textContent;
+            
+            copyToClipboard(commandText, button);
+        }
+        
+        // Função universal para copiar para clipboard
+        function copyToClipboard(text, button) {
+            // Método moderno usando Clipboard API
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showCopyFeedback(button);
+                }).catch(err => {
+                    console.error('Erro ao copiar: ', err);
+                    fallbackCopyText(text, button);
+                });
+            } else {
+                // Fallback para navegadores mais antigos
+                fallbackCopyText(text, button);
             }
         }
         
-        // Inicializar áudio quando a página carregar
-        window.addEventListener('load', initAudio);
+        function fallbackCopyText(text, button) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopyFeedback(button);
+            } catch (err) {
+                console.error('Fallback: Erro ao copiar texto: ', err);
+                button.textContent = 'ERROR!';
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        function showCopyFeedback(button) {
+            const originalText = button.textContent;
+            button.textContent = 'COPIED!';
+            button.classList.add('copied');
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('copied');
+            }, 2000);
+        }
+        
+        // Adicionar efeito de glitch aleatório nos títulos
+        setInterval(() => {
+            const glitch = document.querySelector('.glitch');
+            glitch.style.animation = 'none';
+            setTimeout(() => {
+                glitch.style.animation = '';
+            }, 100);
+        }, 8000);
         
         // Smooth scroll para links internos
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -431,6 +895,12 @@ export function spawn() {
                 }
             });
         });
+        
+        // Efeito de scanline aleatório
+        setInterval(() => {
+            const scanlines = document.querySelector('.scanlines');
+            scanlines.style.opacity = Math.random() * 0.1 + 0.03;
+        }, 3000);
     </script>
 </body>
 </html>
