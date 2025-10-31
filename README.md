@@ -51,7 +51,8 @@ Documentação completa em HTML estilizado.
 
 ## 📄 Arquivos Disponíveis
 
-### [📖 Como Funciona](COMO_FUNCIONA.html)
+### [📖 COMO FUNCIONA](https://raw.githack.com/kastielslip/copilot-termux/master/docs/COMO_FUNCIONA.html)
+
 Arquitetura detalhada do sistema de bypass e como o Copilot funciona no Termux.
 
 **Tópicos:**
@@ -61,7 +62,9 @@ Arquitetura detalhada do sistema de bypass e como o Copilot funciona no Termux.
 - Estrutura de arquivos
 - Variáveis de ambiente
 
-### [🔧 Instalação](INSTALACAO.html)
+
+### [🔧 GUIA DE INSTALAÇÃO](https://raw.githack.com/kastielslip/copilot-termux/master/docs/INSTALACAO.html)
+
 Guia completo passo a passo da instalação.
 
 **Tópicos:**
@@ -71,7 +74,10 @@ Guia completo passo a passo da instalação.
 - Verificação da instalação
 - Primeiros comandos
 
-### [🐛 Troubleshooting](TROUBLESHOOTING.html)
+
+### [🛠️ SOLUÇÃO DE PROBLEMAS](https://raw.githack.com/kastielslip/copilot-termux/master/docs/TROUBLESHOOTING.html)
+
+
 Solução de problemas comuns e erros.
 
 **Tópicos:**
