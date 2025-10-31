@@ -1,162 +1,114 @@
 <div align="center">
 
-![Mr Robot Theme](https://media.giphy.com/media/dLolp8dtrYCJi/giphy.gif)
+![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-000000?style=for-the-badge&logo=github&logoColor=white)
 
-# 🤖 COPILOT NO TERMUX  
-### *"Hello, friend. Bem‑vindo ao futuro da programação mobile."*
+# 🤖 GitHub Copilot CLI para Termux
 
-[![Termux](https://img.shields.io/badge/Termux-000000?style=for-the-badge&logo=android&logoColor=white)](https://termux.com)  
-[![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/features/copilot)  
-[![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)  
-[![ARM64](https://img.shields.io/badge/ARM64-0091BD?style=for-the-badge&logo=arm&logoColor=white)](https://www.arm.com)  
+### *IA da Microsoft rodando 100% no seu Android*
 
----
-
-## 💀 O QUE É ISSO?
-
-Cara, cansa não poder usar o Copilot no celular? Pois é, eu também cansei. Então resolvi o problema.  
-Este projeto traz o **GitHub Copilot CLI** funcionando 100% no **Termux** (Android ARM64).  
-Sim, aquela IA da Microsoft rodando no seu celular.  
-Sem gambiarra, sem desktop, sem cloud. Tudo local, tudo seu. 💻🔥
+[![Termux](https://img.shields.io/badge/Termux-000000?style=flat-square&logo=android&logoColor=white)](https://termux.com)
+[![Node.js](https://img.shields.io/badge/Node.js-43853D?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
+[![ARM64](https://img.shields.io/badge/ARM64-0091BD?style=flat-square&logo=arm&logoColor=white)](https://www.arm.com)
 
 ---
 
-## 📦 O QUE TEM AQUI
+## 🚀 Instalação Rápida (1 Comando)
 
-- ⚙️ **Scripts de instalação testados e funcionando**  
-- 🧩 **Patches para `node‑pty` e `sharp`**  
-- 🧱 **Duas versões disponíveis:** `v0.0.346` (estável) e `v0.0.353` (em testes)  
-- 📘 **Documentação completa de instalação e uso**  
-- 💾 **Backup dos tarballs originais**
+\`\`\`bash
+curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install.sh | bash
+\`\`\`
 
----
+**Ou com versão específica:**
+\`\`\`bash
+# Versão 0.0.353 (mais recente)
+bash <(curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install.sh)
 
-## ⚡ INSTALAÇÃO RÁPIDA
-
-### 🔹 Opção 1: v0.0.353 (Última versão – experimental)  
-```bash
-curl -o install‑v353.sh https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install-v353.sh  
-bash install‑v353.sh
-```
-
-### 🔹 Opção 2: v0.0.346 (Estável – recomendado)  
-```bash
-curl -o install‑v346.sh https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install-v346.sh  
-bash install‑v346.sh
-```
+# Versão 0.0.346 (estável)
+bash <(curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install.sh) 0.0.346
+\`\`\`
 
 ---
 
-## 📚 DOCUMENTAÇÃO
+## ✨ Características
 
-Quer entender o que está rolando por trás?  
-Sem enrolação, sem manual chato de 500 páginas — tá tudo aqui:
-
-<div align="center">
-
-### [📖 COMO FUNCIONA](https://raw.githack.com/kastielslip/copilot-termux/master/docs/COMO_FUNCIONA.html)  
-*Entenda a arquitetura e os patches aplicados*
-
-### [🔧 GUIA DE INSTALAÇÃO](https://raw.githack.com/kastielslip/copilot-termux/master/docs/INSTALACAO.html)  
-*Passo a passo detalhado com troubleshooting*
-
-### [🛠️ SOLUÇÃO DE PROBLEMAS](https://raw.githack.com/kastielslip/copilot-termux/master/docs/TROUBLESHOOTING.html)  
-*Bugs comuns e como resolver*
-
-</div>
+- ✅ **100% Automático** - Download, instalação e configuração completa
+- ✅ **Bypass Inteligente** - Contorna limitações de módulos nativos (pty, sharp)
+- ✅ **Multi-versão** - Suporta v0.0.346, v0.0.353 e futuras versões
+- ✅ **Zero Configuração Manual** - Tudo configurado automaticamente
+- ✅ **Detecção de Sistema** - Verifica arquitetura e dependências
+- ✅ **Logs Detalhados** - Acompanhe cada etapa da instalação
 
 ---
 
-## 🎯 RECURSOS
+## 🎯 Como Usar
 
-- ✅ **100% funcional no Termux ARM64**  
-- ✅ **Patches automáticos** (`node‑pty`, `sharp`)  
-- ✅ **Instalação com um comando**  
-- ✅ **Suporte a múltiplas versões (346 e 353)**  
-- ✅ **Backup automático da versão anterior**  
-- ✅ **Verificação de dependências**  
-- ✅ **Logs detalhados para debug**
+\`\`\`bash
+# Após instalação, reinicie o terminal
+exit
 
----
+# Ver ajuda
+copilot --help
 
-## 🧠 REQUISITOS
+# Modo interativo
+copilot
 
-```bash
-# Termux já instalado  
-pkg install -y nodejs git
-
-# Espaço mínimo: ~200MB  
-# RAM recomendada: 2GB+  
-# Android: 7.0+
-```
+# Executar prompt direto
+copilot -p "como listar arquivos no linux?"
+\`\`\`
 
 ---
 
-## 🚀 COMO USAR
+## 🔧 Como Funciona
 
-Depois de instalado:
-
-```bash
-# Autenticar (primeira vez)  
-copilot --banner
-```
-
-Ou use normalmente:
-
-```bash
-# Pergunta sobre comandos  
-copilot what the shell  
-
-# Sugere comandos baseado no contexto  
-copilot suggest  
-
-# Explica o último comando  
-copilot explain
-```
-
+1. **Detecção Automática** - Verifica Android/Termux e arquitetura
+2. **Download Inteligente** - Baixa tarball direto do npm registry
+3. **Bypass de Módulos** - Cria stubs para node-pty e sharp
+4. **Configuração Automática** - Configura NODE_OPTIONS no .bashrc
 
 ---
 
-## 💬 COMUNIDADE
+## 📁 Arquivos Criados
 
-Achou um bug? Tem uma ideia? Bora conversar:
-
-- 🐛 [Reportar Bug](https://github.com/kastielslip/copilot-termux/issues)  
-- 💡 [Sugerir Feature](https://github.com/kastielslip/copilot-termux/issues)  
-- ⭐ [Dar uma Estrela](https://github.com/kastielslip/copilot-termux)
-
----
-
-## 🤝 CONTRIBUINDO
-
-Esse projeto nasceu da necessidade e persistência.  
-Se você tem melhorias, sugestões ou encontrou bugs, fique à vontade pra abrir **issues** ou **pull requests!**
+\`\`\`
+~/.copilot-hooks/bypass-final.js  # Bypass para módulos nativos
+~/.bashrc                          # NODE_OPTIONS configurado
+~/copilot-install-*.log            # Logs de instalação
+\`\`\`
 
 ---
 
-## 📜 LICENÇA
+## 🐛 Troubleshooting
 
-MIT License — faça o que quiser, só não me culpe se explodir seu celular 😎  
-Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+\`\`\`bash
+# Verificar NODE_OPTIONS
+echo $NODE_OPTIONS
+
+# Recarregar configuração
+source ~/.bashrc
+
+# Ver logs
+ls ~/copilot-install-*.log
+\`\`\`
 
 ---
 
-## 🙏 AGRADECIMENTOS
+## 📊 Status
 
-- **GitHub** — pela API do Copilot  
-- **Termux** — por tornar Linux no Android possível  
-- **Comunidade Open Source** — por tudo  
-- E todos que acreditaram que era possível rodar o Copilot no Termux.  
-  Depois de dias testando, pesquisando e debugando… **conseguimos! 🎉**
+| Versão | Status | Testado |
+|--------|--------|---------|
+| 0.0.346 | ✅ Estável | Android 11+ ARM64 |
+| 0.0.353 | ✅ Funcional | Android 11+ ARM64 |
+
+---
+
+## 📜 Licença
+
+MIT License - [LICENSE](LICENSE)
 
 ---
 
 <div align="center">
 
-### *"O controle é uma ilusão. Mas ainda precisamos dele para programar."*
-
-![Mr Robot Glitch](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdjlnN2NyY3cwdHVlbTV5bWk5NWZ6bzJ2bWJ4bTZqOWdrbnlhMmhxaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HFj3iHt8F2rEQnK/giphy.gif)
-
-**Feito com ☕ e 💀 por [kastielslip](https://github.com/kastielslip)**
+**Feito com ☕ por [kastielslip](https://github.com/kastielslip)**
 
 </div>
