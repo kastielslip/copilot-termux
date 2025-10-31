@@ -291,7 +291,7 @@
         }
         
         .terminal::before {
-            content: "root@elliot:~$";
+            content: "root@KastielSlip";
             color: var(--fsociety-red);
             position: absolute;
             left: 1rem;
@@ -580,7 +580,7 @@
     <div class="scanlines"></div>
     
     <header>
-        <h1 class="glitch" data-text="🔧 SOLUÇÃO DE PROBLEMAS">🔧 SOLUÇÃO DE PROBLEMAS</h1>
+        <h1 class="glitch" data-text="🔧 Bugs e Correçoes">🔧 Bugs e Correçoes</h1>
         <p class="subtitle">RESOLVENDO ERROS COMUNS DO COPILOT NO TERMUX</p>
         <div class="fsociety-logo">[fsociety://debug.mode.activated]</div>
     </header>
@@ -681,13 +681,13 @@ EOF</code></pre>
                     <div class="terminal">
                         <div class="terminal-content">ls -lh github-copilot-*.tgz</div>
                     </div>
-                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY COMMAND</button>
+                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY</button>
                     
                     <p>2. Se não existir, baixe novamente:</p>
                     <div class="terminal">
                         <div class="terminal-content">wget https://github.com/kastielslip/copilot-termux/releases/download/v0.0.346/github-copilot-0.0.346.tgz</div>
                     </div>
-                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY COMMAND</button>
+                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY</button>
                 </div>
             </div>
         </div>
@@ -695,7 +695,7 @@ EOF</code></pre>
         <div class="accordion">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <i class="fas fa-bug"></i>
-                <h3>❌ ERRO: "Command not found: github-copilot-cli"</h3>
+                <h3>❌ ERRO: "Command not found: copilot"</h3>
             </div>
             <div class="accordion-content">
                 <div class="error-box">
@@ -707,14 +707,14 @@ EOF</code></pre>
                     <div class="terminal">
                         <div class="terminal-content">hash -r</div>
                     </div>
-                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY COMMAND</button>
+                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY</button>
                     
                     <p>2. Se não funcionar, reinicie o Termux.</p>
                     <p>3. Verifique se está instalado:</p>
                     <div class="terminal">
                         <div class="terminal-content">npm list -g @github/copilot</div>
                     </div>
-                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY COMMAND</button>
+                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY</button>
                 </div>
             </div>
         </div>
@@ -734,19 +734,19 @@ EOF</code></pre>
                     <div class="terminal">
                         <div class="terminal-content">rm github-copilot-*.tgz</div>
                     </div>
-                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY COMMAND</button>
+                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY</button>
                     
                     <p>2. Baixe novamente do repositório:</p>
                     <div class="terminal">
                         <div class="terminal-content">wget https://github.com/kastielslip/copilot-termux/releases/download/v0.0.346/github-copilot-0.0.346.tgz</div>
                     </div>
-                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY COMMAND</button>
+                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY</button>
                     
                     <p>3. Verifique a integridade:</p>
                     <div class="terminal">
                         <div class="terminal-content">tar -tzf github-copilot-0.0.346.tgz | head</div>
                     </div>
-                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY COMMAND</button>
+                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY</button>
                 </div>
             </div>
         </div>
@@ -762,11 +762,11 @@ EOF</code></pre>
                 </div>
                 <div class="solution-box">
                     <strong><i class="fas fa-wrench"></i> SOLUÇÃO:</strong>
-                    <p>1. Execute o comando de autenticação:</p>
+                    <p>1. Execute o comando de autenticação pelo modo chat interativo:</p>
                     <div class="terminal">
-                        <div class="terminal-content">github-copilot-cli auth</div>
+                        <div class="terminal-content">copilot --banner</div>
                     </div>
-                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY COMMAND</button>
+                    <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY</button>
                     
                     <p>2. Siga as instruções e acesse o link fornecido.</p>
                     <p>3. Certifique-se de que sua conta tem acesso ao Copilot.</p>
@@ -782,7 +782,7 @@ EOF</code></pre>
                 <div class="diagnostic-item">
                     <h4><i class="fas fa-code-branch"></i> VERIFICAR VERSÃO</h4>
                     <div class="terminal">
-                        <div class="terminal-content">github-copilot-cli --version</div>
+                        <div class="terminal-content">copilot --version</div>
                     </div>
                     <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY</button>
                 </div>
