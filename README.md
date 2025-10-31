@@ -39,6 +39,20 @@ bash <(curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/m
 
 ---
 
+## 📚 DOCUMENTAÇÃO
+
+Tá, mas como isso funciona? Aqui tem tudo explicado de forma clara (sem manual chato de 500 páginas):
+
+<div align="center">
+
+### [📖 DOCS](https://raw.githack.com/kastielslip/copilot-termux/master/docs/README.md)
+*Entenda a arquitetura e os patches aplicados*
+*Passo a passo detalhado com troubleshooting*
+*Bugs comuns e como resolver*
+
+</div>
+
+
 ## ✨ Características
 
 <table>
