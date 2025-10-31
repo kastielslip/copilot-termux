@@ -114,15 +114,6 @@ copilot suggest
 copilot explain
 ```
 
----
-
-
-
-<div align="center">  
-![Mr Robot – Terminal Glitch](https://media.giphy.com/media/dLolp8dtrYCJi/giphy.gif)  
-</div>
-
-
 
 ---
 
