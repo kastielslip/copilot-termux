@@ -3,618 +3,471 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Como Funciona - Copilot Termux /title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Troubleshooting - Copilot Termux</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
-        :root {
-            --hacker-green: #00ff41;
-            --dark-bg: #0a0a0a;
-            --card-bg: rgba(15, 15, 15, 0.85);
-            --text-color: #e0e0e0;
-            --accent-color: #ff003c;
-        }
-        
+
         body {
             font-family: 'Courier New', monospace;
-            background-color: var(--dark-bg);
-            color: var(--text-color);
+            background: linear-gradient(135deg, #1a0000, #330000, #0d0d0d);
+            color: #ff4444;
             line-height: 1.6;
             overflow-x: hidden;
         }
-        
-        #video-bg {
+
+        .matrix-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            z-index: -2;
-            opacity: 0.4;
-        }
-        
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0.7) 100%);
             z-index: -1;
+            opacity: 0.1;
         }
-        
+
         header {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
             text-align: center;
-            border-bottom: 1px solid var(--hacker-green);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
+            border-bottom: 2px solid #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
         }
-        
-        header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--hacker-green), transparent);
-            animation: scanline 3s linear infinite;
-        }
-        
-        @keyframes scanline {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        
+
         h1 {
-            font-size: 1.8rem;
-            color: var(--hacker-green);
-            text-shadow: 0 0 10px rgba(0, 255, 65, 0.7);
-            margin-bottom: 0.5rem;
-            letter-spacing: 2px;
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px #ff4444;
+            animation: glow 2s ease-in-out infinite alternate;
         }
-        
-        .subtitle {
-            font-size: 0.9rem;
-            color: var(--text-color);
-            opacity: 0.8;
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #ff4444, 0 0 20px #ff4444; }
+            to { text-shadow: 0 0 20px #ff4444, 0 0 30px #ff4444, 0 0 40px #ff4444; }
         }
-        
+
         .container {
-            max-width: 100%;
-            margin: 1rem auto;
-            padding: 1rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #ff4444;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(255, 68, 68, 0.3);
         }
-        
-        .card {
-            background: var(--card-bg);
-            border: 1px solid rgba(0, 255, 65, 0.3);
+
+        .section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(20, 0, 0, 0.5);
+            border-left: 4px solid #ff4444;
             border-radius: 5px;
-            margin-bottom: 1.5rem;
-            padding: 1.2rem;
-            backdrop-filter: blur(5px);
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         }
-        
-        .card:hover {
-            border-color: var(--hacker-green);
-            box-shadow: 0 5px 20px rgba(0, 255, 65, 0.2);
-            transform: translateY(-5px);
+
+        .section:hover {
+            transform: translateX(10px);
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
         }
-        
+
         h2 {
-            color: var(--hacker-green);
+            color: #ff4444;
             margin-bottom: 1rem;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 1.8rem;
         }
-        
+
         h3 {
-            color: var(--accent-color);
-            margin: 0.8rem 0;
-            font-size: 1.2rem;
+            color: #ff6666;
+            margin: 1rem 0;
+            font-size: 1.3rem;
         }
-        
+
         p {
-            margin: 0.8rem 0;
-            color: var(--text-color);
+            margin: 1rem 0;
+            color: #ffaaaa;
         }
-        
+
         code {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 0.2rem 0.4rem;
+            background: #000;
+            padding: 0.2rem 0.5rem;
             border-radius: 3px;
-            color: var(--hacker-green);
-            border: 1px solid rgba(0, 255, 65, 0.3);
-            font-size: 0.9rem;
-            font-family: 'Courier New', monospace;
+            color: #ff4444;
+            border: 1px solid #ff4444;
         }
-        
+
         pre {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 0.8rem;
+            background: #000;
+            padding: 1rem;
             border-radius: 5px;
             overflow-x: auto;
-            border: 1px solid rgba(0, 255, 65, 0.3);
-            margin: 0.8rem 0;
-            font-size: 0.9rem;
+            border: 1px solid #ff4444;
+            margin: 1rem 0;
             position: relative;
         }
-        
-        pre::before {
-            content: "Code";
+
+        .copy-btn {
             position: absolute;
-            top: 0;
-            right: 0;
-            background: var(--hacker-green);
-            color: #000;
-            padding: 2px 8px;
-            font-size: 0.7rem;
-            border-bottom-left-radius: 5px;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 0.3rem 0.7rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
         }
-        
+
+        .copy-btn:hover {
+            background: rgba(255, 68, 68, 0.4);
+            transform: scale(1.05);
+        }
+
         ul {
             list-style: none;
-            margin: 0.8rem 0;
+            margin: 1rem 0;
         }
-        
-        ul li {
-            margin: 0.5rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-        
+
         ul li:before {
-            content: ">";
-            color: var(--hacker-green);
+            content: "⚠ ";
+            color: #ff4444;
             font-weight: bold;
-            position: absolute;
-            left: 0;
         }
-        
-        .terminal {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 0.8rem;
+
+        .error-box {
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid #ff4444;
+            padding: 1rem;
+            margin: 1rem 0;
             border-radius: 5px;
-            border: 1px solid var(--hacker-green);
-            margin: 0.8rem 0;
-            font-family: 'Courier New', monospace;
-            position: relative;
-            padding-left: 2rem;
-            overflow-x: auto;
         }
-        
-        .terminal::before {
-            content: "user@termux:~$";
-            color: var(--hacker-green);
-            position: absolute;
-            left: 0.8rem;
-        }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin: 0.8rem 0;
-            padding: 0.6rem 1.2rem;
-            background: rgba(0, 255, 65, 0.1);
-            border: 1px solid var(--hacker-green);
+
+        .solution-box {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            padding: 1rem;
+            margin: 1rem 0;
             border-radius: 5px;
-            color: var(--hacker-green);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
         }
-        
-        .btn:hover {
-            background: rgba(0, 255, 65, 0.2);
-            box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
-            transform: translateX(-5px);
-        }
-        
+
         .audio-control {
             position: fixed;
             bottom: 20px;
             right: 20px;
             background: rgba(0, 0, 0, 0.8);
-            padding: 0.8rem;
-            border-radius: 50%;
-            border: 1px solid var(--hacker-green);
+            padding: 1rem;
+            border-radius: 50px;
+            border: 2px solid #ff4444;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 1.3rem;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+            font-size: 1.5rem;
         }
-        
+
         .audio-control:hover {
             transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.8);
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
         }
-        
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 1rem;
-            background: rgba(0, 0, 0, 0.7);
-            border-top: 1px solid rgba(0, 255, 65, 0.3);
-            font-size: 0.8rem;
-            color: var(--hacker-green);
-        }
-        
-        .glitch {
-            position: relative;
+
+        .back-link {
             display: inline-block;
+            margin: 1rem 0;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            border-radius: 5px;
+            color: #ff4444;
+            text-decoration: none;
+            transition: all 0.3s ease;
         }
-        
-        .glitch::before, .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+
+        .back-link:hover {
+            background: rgba(255, 68, 68, 0.4);
+            transform: translateX(-5px);
         }
-        
-        .glitch::before {
-            left: 2px;
-            text-shadow: -2px 0 #ff003c;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim 5s infinite linear alternate-reverse;
+
+        .accordion {
+            background: rgba(0, 0, 0, 0.5);
+            margin: 1rem 0;
+            border-radius: 5px;
+            overflow: hidden;
         }
-        
-        .glitch::after {
-            left: -2px;
-            text-shadow: -2px 0 #00fff9;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim2 5s infinite linear alternate-reverse;
+
+        .accordion-header {
+            background: rgba(255, 68, 68, 0.2);
+            padding: 1rem;
+            cursor: pointer;
+            border-left: 4px solid #ff4444;
+            transition: all 0.3s ease;
         }
-        
-        @keyframes glitch-anim {
-            0% { clip: rect(31px, 9999px, 15px, 0); }
-            5% { clip: rect(32px, 9999px, 30px, 0); }
-            10% { clip: rect(16px, 9999px, 34px, 0); }
-            15% { clip: rect(42px, 9999px, 32px, 0); }
-            20% { clip: rect(12px, 9999px, 31px, 0); }
-            25% { clip: rect(14px, 9999px, 27px, 0); }
-            30% { clip: rect(2px, 9999px, 30px, 0); }
-            35% { clip: rect(25px, 9999px, 6px, 0); }
-            40% { clip: rect(25px, 9999px, 24px, 0); }
-            45% { clip: rect(37px, 9999px, 39px, 0); }
-            50% { clip: rect(8px, 9999px, 36px, 0); }
-            55% { clip: rect(10px, 9999px, 22px, 0); }
-            60% { clip: rect(6px, 9999px, 16px, 0); }
-            65% { clip: rect(19px, 9999px, 11px, 0); }
-            70% { clip: rect(16px, 9999px, 10px, 0); }
-            75% { clip: rect(19px, 9999px, 33px, 0); }
-            80% { clip: rect(20px, 9999px, 6px, 0); }
-            85% { clip: rect(39px, 9999px, 22px, 0); }
-            90% { clip: rect(9px, 9999px, 18px, 0); }
-            95% { clip: rect(6px, 9999px, 37px, 0); }
-            100% { clip: rect(23px, 9999px, 6px, 0); }
+
+        .accordion-header:hover {
+            background: rgba(255, 68, 68, 0.3);
         }
-        
-        @keyframes glitch-anim2 {
-            0% { clip: rect(31px, 9999px, 15px, 0); }
-            5% { clip: rect(32px, 9999px, 30px, 0); }
-            10% { clip: rect(16px, 9999px, 34px, 0); }
-            15% { clip: rect(42px, 9999px, 32px, 0); }
-            20% { clip: rect(12px, 9999px, 31px, 0); }
-            25% { clip: rect(14px, 9999px, 27px, 0); }
-            30% { clip: rect(2px, 9999px, 30px, 0); }
-            35% { clip: rect(25px, 9999px, 6px, 0); }
-            40% { clip: rect(25px, 9999px, 24px, 0); }
-            45% { clip: rect(37px, 9999px, 39px, 0); }
-            50% { clip: rect(8px, 9999px, 36px, 0); }
-            55% { clip: rect(10px, 9999px, 22px, 0); }
-            60% { clip: rect(6px, 9999px, 16px, 0); }
-            65% { clip: rect(19px, 9999px, 11px, 0); }
-            70% { clip: rect(16px, 9999px, 10px, 0); }
-            75% { clip: rect(19px, 9999px, 33px, 0); }
-            80% { clip: rect(20px, 9999px, 6px, 0); }
-            85% { clip: rect(39px, 9999px, 22px, 0); }
-            90% { clip: rect(9px, 9999px, 18px, 0); }
-            95% { clip: rect(6px, 9999px, 37px, 0); }
-            100% { clip: rect(23px, 9999px, 6px, 0); }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1rem;
         }
-        
-        /* Media Queries para dispositivos móveis */
-        @media (min-width: 768px) {
-            header {
-                padding: 2rem;
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .container {
-                max-width: 1200px;
-                margin: 2rem auto;
-                padding: 2rem;
-            }
-            
-            .card {
-                padding: 1.5rem;
-                margin-bottom: 2rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.5rem;
-            }
-            
-            h2 {
-                font-size: 1.3rem;
-            }
-            
-            .card {
-                padding: 1rem;
-            }
+
+        .accordion-content.active {
+            max-height: 1000px;
+            padding: 1rem;
         }
     </style>
 </head>
 <body>
-    <video id="video-bg" autoplay muted loop>
-        <source src="https://assets.codepen.io/3361033/mr-robot-background.mp4" type="video/mp4">
-        <!-- Fallback para caso o vídeo não carregue -->
-        Seu navegador não suporta o elemento de vídeo.
-    </video>
-    <div class="overlay"></div>
+    <canvas class="matrix-bg" id="matrix"></canvas>
     
     <header>
-        <h1 class="glitch" data-text="🤖 COPILOT TERMUX">🤖 COPILOT TERMUX</h1>
-        <p class="subtitle">Sistema adaptado para Android - Mr. Robot Edition</p>
+        <h1>🔧 SOLUÇÃO DE PROBLEMAS</h1>
+        <p>Resolvendo erros comuns do Copilot no Termux</p>
     </header>
-    
+
     <div class="container">
-        <a href="https://github.com/kastielslip/copilot-termux" class="btn">
-            <i class="fab fa-github"></i> Voltar ao Repositório
-        </a>
-        
-        <div class="card">
-            <h2><i class="fas fa-project-diagram"></i> Arquitetura do Sistema</h2>
-            <p>O GitHub Copilot CLI foi adaptado para funcionar no Termux (Android) através de patches e stubs que substituem módulos nativos incompatíveis:</p>
-            <h3>Componentes Principais:</h3>
+        <a href="https://github.com/kastielslip/copilot-termux" class="back-link">← Voltar ao Repositório</a>
+
+        <div class="section">
+            <h2>❌ Erros Mais Comuns</h2>
+            <p>Aqui estão os problemas mais frequentes e suas soluções:</p>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>❌ Erro: "Cannot find module 'node-pty'"</h3>
+            </div>
+            <div class="accordion-content">
+                <div class="error-box">
+                    <strong>Sintoma:</strong> O Copilot não inicia e exibe erro relacionado ao módulo node-pty.
+                </div>
+                <div class="solution-box">
+                    <strong>✅ Solução:</strong>
+                    <pre><code>cd $(npm root -g)/@github/copilot/dist
+cat > node_modules/node-pty/lib/index.js << 'EOF'
+export function spawn() { 
+  return { on: () => {}, write: () => {} }; 
+}
+EOF</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>❌ Erro: "Cannot find module 'sharp'"</h3>
+            </div>
+            <div class="accordion-content">
+                <div class="error-box">
+                    <strong>Sintoma:</strong> Erro ao carregar o módulo sharp durante a inicialização.
+                </div>
+                <div class="solution-box">
+                    <strong>✅ Solução:</strong>
+                    <pre><code>cd $(npm root -g)/@github/copilot/dist
+cat > node_modules/sharp/lib/index.js << 'EOF'
+export default {};
+EOF</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>❌ Erro: "ENOENT: no such file or directory"</h3>
+            </div>
+            <div class="accordion-content">
+                <div class="error-box">
+                    <strong>Sintoma:</strong> Arquivo não encontrado durante a instalação.
+                </div>
+                <div class="solution-box">
+                    <strong>✅ Solução:</strong>
+                    <p>1. Verifique se o tarball está no diretório correto:</p>
+                    <pre><code>ls -lh github-copilot-*.tgz</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                    <p>2. Se não existir, baixe novamente:</p>
+                    <pre><code>wget https://github.com/kastielslip/copilot-termux/releases/download/v0.0.346/github-copilot-0.0.346.tgz</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>❌ Erro: "Command not found: github-copilot-cli"</h3>
+            </div>
+            <div class="accordion-content">
+                <div class="error-box">
+                    <strong>Sintoma:</strong> O comando do Copilot não é reconhecido após instalação.
+                </div>
+                <div class="solution-box">
+                    <strong>✅ Solução:</strong>
+                    <p>1. Recarregue o cache de comandos:</p>
+                    <pre><code>hash -r</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                    <p>2. Se não funcionar, reinicie o Termux.</p>
+                    <p>3. Verifique se está instalado:</p>
+                    <pre><code>npm list -g @github/copilot</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>❌ Erro: "npm warn tarball tarball data... seems to be corrupted"</h3>
+            </div>
+            <div class="accordion-content">
+                <div class="error-box">
+                    <strong>Sintoma:</strong> O tarball está corrompido ou inválido.
+                </div>
+                <div class="solution-box">
+                    <strong>✅ Solução:</strong>
+                    <p>1. Remova o tarball corrompido:</p>
+                    <pre><code>rm github-copilot-*.tgz</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                    <p>2. Baixe novamente do repositório:</p>
+                    <pre><code>wget https://github.com/kastielslip/copilot-termux/releases/download/v0.0.346/github-copilot-0.0.346.tgz</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                    <p>3. Verifique a integridade:</p>
+                    <pre><code>tar -tzf github-copilot-0.0.346.tgz | head</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>❌ Erro: "Authentication failed"</h3>
+            </div>
+            <div class="accordion-content">
+                <div class="error-box">
+                    <strong>Sintoma:</strong> Falha ao autenticar no GitHub.
+                </div>
+                <div class="solution-box">
+                    <strong>✅ Solução:</strong>
+                    <p>1. Execute o comando de autenticação:</p>
+                    <pre><code>github-copilot-cli auth</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+                    <p>2. Siga as instruções e acesse o link fornecido.</p>
+                    <p>3. Certifique-se de que sua conta tem acesso ao Copilot.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔍 Diagnóstico Avançado</h2>
+            <p>Use esses comandos para diagnosticar problemas:</p>
+
+            <h3>Verificar versão instalada:</h3>
+            <pre><code>github-copilot-cli --version</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+
+            <h3>Verificar logs de erro:</h3>
+            <pre><code>cat ~/log.txt</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+
+            <h3>Verificar instalação do Node.js:</h3>
+            <pre><code>node --version
+npm --version</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+
+            <h3>Listar pacotes globais instalados:</h3>
+            <pre><code>npm list -g --depth=0</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+        </div>
+
+        <div class="section">
+            <h2>🆘 Ainda com problemas?</h2>
+            <p>Se nenhuma das soluções acima funcionou:</p>
+            
             <ul>
-                <li><strong>Node.js 18+</strong> - Runtime JavaScript necessário</li>
-                <li><strong>node-pty</strong> - Emulação de terminal (stubbed)</li>
-                <li><strong>sharp</strong> - Processamento de imagens (stubbed)</li>
-                <li><strong>Patches ESM</strong> - Modificações para compatibilidade ARM64</li>
+                <li>Abra uma issue no <a href="https://github.com/kastielslip/copilot-termux/issues" style="color: #ff4444;">repositório do GitHub</a></li>
+                <li>Inclua os logs completos do erro</li>
+                <li>Informe sua versão do Termux e Node.js</li>
+                <li>Descreva os passos que levaram ao erro</li>
             </ul>
         </div>
-        
-        <div class="card">
-            <h2><i class="fas fa-cogs"></i> Processo de Instalação</h2>
-            <p>O script automatizado realiza os seguintes passos:</p>
-            <div class="terminal">npm install -g file:github-copilot-0.0.346.tgz</div>
-            <h3>Etapas do Script:</h3>
-            <ul>
-                <li>Verifica dependências (Node.js, npm, git)</li>
-                <li>Baixa o tarball da versão especificada</li>
-                <li>Instala o pacote globalmente</li>
-                <li>Aplica patches de compatibilidade</li>
-                <li>Cria stubs para módulos nativos</li>
-                <li>Configura permissões e executáveis</li>
-            </ul>
-        </div>
-        
-        <div class="card">
-            <h2><i class="fas fa-tools"></i> Sistema de Patches</h2>
-            <p>Os patches modificam o código do Copilot para funcionar no ambiente ARM64 do Termux:</p>
-            <h3>Patches Aplicados:</h3>
-            <ul>
-                <li><strong>node-pty stub</strong> — Substitui funcionalidades de PTY</li>
-                <li><strong>sharp stub</strong> — Remove dependências de processamento de imagem</li>
-                <li><strong>ESM fixes</strong> — Corrige imports e requires</li>
-                <li><strong>Path adjustments</strong> — Adapta caminhos para Termux</li>
-            </ul>
-            <pre><code># Exemplo de stub node-pty
-export function spawn() {
-    return {
-        on: () => {},
-        write: () => {}
-    };
-}</code></pre>
-        </div>
-        
-        <div class="card">
-            <h2><i class="fas fa-rocket"></i> Fluxo de Execução</h2>
-            <p>Quando você executa o Copilot:</p>
-            <ul>
-                <li>O comando <code>copilot</code> inicia o Node.js</li>
-                <li>Carrega os módulos patcheados</li>
-                <li>Conecta com a API do GitHub via HTTPS</li>
-                <li>Processa suas solicitações localmente</li>
-                <li>Retorna sugestões de código em tempo real</li>
-            </ul>
-        </div>
-        
-        <div class="card">
-            <h2><i class="fas fa-shield-alt"></i> Segurança e Privacidade</h2>
-            <p>O sistema mantém as mesmas garantias de segurança da versão oficial:</p>
-            <ul>
-                <li>Autenticação via token OAuth do GitHub</li>
-                <li>Comunicação criptografada (HTTPS)</li>
-                <li>Nenhum dado armazenado localmente sem permissão</li>
-                <li>Compatível com políticas de privacidade do GitHub</li>
-            </ul>
-        </div>
-        
-        <div class="card">
-            <h2><i class="fas fa-exclamation-triangle"></i> Limitações Conhecidas</h2>
-            <p>Algumas funcionalidades possuem limitações no ambiente Termux:</p>
-            <ul>
-                <li>Funcionalidades de terminal avançadas podem não funcionar 100%</li>
-                <li>Processamento de imagens desabilitado (não essencial)</li>
-                <li>Performance pode variar dependendo do dispositivo</li>
-                <li>Alguns comandos podem precisar de adaptações</li>
-            </ul>
-        </div>
-        
-        <a href="https://github.com/kastielslip/copilot-termux" class="btn">
-            <i class="fab fa-github"></i> Voltar ao Repositório
-        </a>
+
+        <a href="https://github.com/kastielslip/copilot-termux" class="back-link">← Voltar ao Repositório</a>
     </div>
-    
+
     <div class="audio-control" onclick="toggleAudio()" id="audioBtn">
-        <i class="fas fa-volume-mute"></i>
+        🔇
     </div>
-    
-    <div class="status-bar">
-        <div class="status-item">Sistema: <span id="system-status">Operacional</span></div>
-        <div class="status-item">fsociety@root:~$</div>
-    </div>
-    
+
     <audio id="bgMusic" loop>
-        <source src="https://assets.codepen.io/3361033/mr-robot-theme.mp3" type="audio/mpeg">
-        <!-- Fallback para caso o áudio não carregue -->
-        Seu navegador não suporta o elemento de áudio.
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
     </audio>
-    
+
     <script>
-        // Inicializar elementos quando a página carregar
-        document.addEventListener('DOMContentLoaded', function() {
-            // Configurar vídeo de fundo
-            const videoBg = document.getElementById('video-bg');
-            
-            // Tentar carregar o vídeo
-            videoBg.play().catch(e => {
-                console.log('Vídeo não pôde ser reproduzido automaticamente:', e);
-                // Adicionar fallback visual se o vídeo não carregar
-                document.body.style.background = "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)";
-            });
-            
-            // Inicializar áudio
-            initAudio();
-            
-            // Adicionar efeito de digitação no status
-            typeWriter();
-        });
-        
-        // Efeito de digitação para o status
-        function typeWriter() {
-            const statusElement = document.getElementById('system-status');
-            const originalText = statusElement.textContent;
-            statusElement.textContent = '';
-            
-            let i = 0;
-            const typing = setInterval(() => {
-                if (i < originalText.length) {
-                    statusElement.textContent += originalText.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(typing);
-                    // Após terminar, piscar o cursor
-                    setInterval(() => {
-                        statusElement.textContent = statusElement.textContent.endsWith('_') 
-                            ? originalText 
-                            : originalText + '_';
-                    }, 500);
+        // Matrix effect
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = 'ERROR01アイウエオカキクケコサシスセソタチツテト';
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ff4444';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
                 }
-            }, 100);
+                drops[i]++;
+            }
         }
-        
+
+        setInterval(drawMatrix, 35);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
         // Audio control
         let audioPlaying = false;
         const audio = document.getElementById('bgMusic');
         const audioBtn = document.getElementById('audioBtn');
-        
-        function initAudio() {
-            // Em dispositivos móveis, precisamos de interação do usuário
-            audio.volume = 0.5;
-            
-            // Tentar reproduzir quando o usuário interagir com a página
-            document.addEventListener('click', function firstInteraction() {
-                if (!audioPlaying) {
-                    audio.play().then(() => {
-                        audioPlaying = true;
-                        audioBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                    }).catch(e => {
-                        console.log('Reprodução automática bloqueada:', e);
-                    });
-                }
-                document.removeEventListener('click', firstInteraction);
-            });
-        }
-        
+
         function toggleAudio() {
             if (audioPlaying) {
                 audio.pause();
                 audioPlaying = false;
-                audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                audioBtn.textContent = '🔇';
             } else {
-                audio.play().then(() => {
-                    audioPlaying = true;
-                    audioBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                }).catch(e => {
-                    console.log('Erro ao reproduzir áudio:', e);
-                    // Tentar carregar uma fonte alternativa
-                    audio.innerHTML = '<source src="https://assets.codepen.io/3361033/hacker-theme.mp3" type="audio/mpeg">';
-                    audio.load();
-                    audio.play().then(() => {
-                        audioPlaying = true;
-                        audioBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                    });
-                });
+                audio.play();
+                audioPlaying = true;
+                audioBtn.textContent = '🔊';
             }
         }
-        
-        // Adicionar efeito de glitch aleatório nos títulos
-        setInterval(() => {
-            const glitch = document.querySelector('.glitch');
-            glitch.style.animation = 'none';
-            setTimeout(() => {
-                glitch.style.animation = '';
-            }, 100);
-        }, 5000);
-        
-        // Smooth scroll para links internos
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth'
-                    });
+
+        // Copy code function
+        function copyCode(button) {
+            const pre = button.parentElement;
+            const code = pre.querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = '✓ Copiado!';
+                setTimeout(() => {
+                    button.textContent = 'Copiar';
+                }, 2000);
+            });
+        }
+
+        // Accordion function
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const allContents = document.querySelectorAll('.accordion-content');
+            
+            allContents.forEach(item => {
+                if (item !== content) {
+                    item.classList.remove('active');
                 }
             });
-        });
-        
-        // Efeito de digitação nos terminais
-        document.querySelectorAll('.terminal').forEach(terminal => {
-            const originalText = terminal.textContent;
-            terminal.textContent = '';
             
-            let i = 0;
-            const typing = setInterval(() => {
-                if (i < originalText.length) {
-                    terminal.textContent += originalText.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(typing);
-                }
-            }, 50);
-        });
+            content.classList.toggle('active');
+        }
     </script>
 </body>
 </html>
