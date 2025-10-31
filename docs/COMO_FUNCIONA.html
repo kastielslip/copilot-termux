@@ -223,8 +223,11 @@
             </ul>
 
             <pre><code>// Exemplo de stub node-pty
+                
 export function spawn() {
+                
   return { on: () => {}, write: () => {} };
+                
 }</code></pre>
         </div>
 
@@ -233,7 +236,7 @@ export function spawn() {
             <p>Quando você executa o Copilot:</p>
 
             <ul>
-                <li>O comando <code>github-copilot-cli</code> inicia o Node.js</li>
+                <li>O comando <code>copilot</code> inicia o Node.js</li>
                 <li>Carrega os módulos patcheados</li>
                 <li>Conecta com a API do GitHub via HTTPS</li>
                 <li>Processa suas solicitações localmente</li>
