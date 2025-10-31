@@ -1,905 +1,187 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Copilot CLI - Termux</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        :root {
-            --hacker-green: #00ff41;
-            --fsociety-red: #ff003c;
-            --dark-bg: #0a0a0a;
-            --card-bg: rgba(15, 15, 15, 0.92);
-            --text-color: #e0e0e0;
-            --terminal-bg: #000000;
-        }
-        
-        body {
-            font-family: 'Courier New', 'Consolas', monospace;
-            background-color: var(--dark-bg);
-            color: var(--text-color);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-        
-        #video-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -2;
-            opacity: 0.3;
-        }
-        
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(255, 0, 60, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(0, 255, 65, 0.1) 0%, transparent 50%),
-                linear-gradient(to bottom, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.8) 100%);
-            z-index: -1;
-        }
-        
-        .scanlines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                transparent 50%,
-                rgba(0, 255, 65, 0.03) 50%
-            );
-            background-size: 100% 4px;
-            z-index: 0;
-            pointer-events: none;
-        }
-        
-        header {
-            background: rgba(0, 0, 0, 0.85);
-            padding: 1.5rem;
-            text-align: center;
-            border-bottom: 1px solid var(--fsociety-red);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(255, 0, 60, 0.2);
-        }
-        
-        header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--hacker-green), transparent);
-            animation: scanline 3s linear infinite;
-        }
-        
-        @keyframes scanline {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        
-        h1 {
-            font-size: 1.8rem;
-            color: var(--hacker-green);
-            text-shadow: 0 0 10px rgba(0, 255, 65, 0.7);
-            margin-bottom: 0.5rem;
-            letter-spacing: 3px;
-            font-weight: 700;
-        }
-        
-        .subtitle {
-            font-size: 0.9rem;
-            color: var(--text-color);
-            opacity: 0.8;
-            letter-spacing: 1px;
-        }
-        
-        .fsociety-logo {
-            font-family: 'Courier New', monospace;
-            color: var(--fsociety-red);
-            font-weight: bold;
-            margin-top: 0.5rem;
-            font-size: 1.1rem;
-        }
-        
-        .container {
-            max-width: 100%;
-            margin: 1rem auto;
-            padding: 1rem;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 0, 60, 0.4);
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            padding: 1.2rem;
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--hacker-green), transparent);
-        }
-        
-        .card:hover {
-            border-color: var(--hacker-green);
-            box-shadow: 
-                0 5px 25px rgba(0, 255, 65, 0.3),
-                inset 0 0 20px rgba(0, 255, 65, 0.1);
-            transform: translateY(-3px);
-        }
-        
-        h2 {
-            color: var(--hacker-green);
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid rgba(0, 255, 65, 0.3);
-            padding-bottom: 0.5rem;
-        }
-        
-        h3 {
-            color: var(--fsociety-red);
-            margin: 1rem 0 0.5rem;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-        
-        p {
-            margin: 0.8rem 0;
-            color: var(--text-color);
-            line-height: 1.7;
-        }
-        
-        .code-container {
-            background: var(--terminal-bg);
-            border: 1px solid rgba(0, 255, 65, 0.4);
-            border-radius: 6px;
-            margin: 1rem 0;
-            overflow: hidden;
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
-            position: relative;
-        }
-        
-        .code-header {
-            background: linear-gradient(90deg, #1a1a1a, #2a2a2a);
-            padding: 0.5rem 1rem;
-            border-bottom: 1px solid rgba(0, 255, 65, 0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-            color: var(--hacker-green);
-        }
-        
-        .code-header .file-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .copy-btn {
-            background: rgba(0, 255, 65, 0.1);
-            border: 1px solid var(--hacker-green);
-            color: var(--hacker-green);
-            padding: 0.3rem 0.6rem;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            transition: all 0.3s ease;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .copy-btn:hover {
-            background: rgba(0, 255, 65, 0.2);
-            box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
-        }
-        
-        .copy-btn.copied {
-            background: rgba(0, 255, 65, 0.3);
-            color: #000;
-        }
-        
-        .code-content {
-            padding: 1rem;
-            overflow-x: auto;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            background: #000;
-        }
-        
-        code {
-            color: var(--hacker-green);
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-        }
-        
-        .code-content .keyword { color: #ff79c6; }
-        .code-content .function { color: #50fa7b; }
-        .code-content .string { color: #f1fa8c; }
-        .code-content .comment { color: #6272a4; font-style: italic; }
-        .code-content .number { color: #bd93f9; }
-        .code-content .operator { color: #ff5555; }
-        
-        pre {
-            margin: 0;
-            white-space: pre-wrap;
-        }
-        
-        ul {
-            list-style: none;
-            margin: 0.8rem 0;
-        }
-        
-        ul li {
-            margin: 0.7rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-        
-        ul li:before {
-            content: ">";
-            color: var(--fsociety-red);
-            font-weight: bold;
-            position: absolute;
-            left: 0;
-        }
-        
-        .terminal {
-            background: var(--terminal-bg);
-            padding: 1rem;
-            border-radius: 6px;
-            border: 1px solid var(--hacker-green);
-            margin: 1rem 0;
-            font-family: 'Courier New', monospace;
-            position: relative;
-            overflow-x: auto;
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
-        }
-        
-        .terminal::before {
-            content: "root@KastielSlip:";
-            color: var(--fsociety-red);
-            position: absolute;
-            left: 1rem;
-            top: 1rem;
-            font-weight: bold;
-        }
-        
-        .terminal-content {
-            margin-left: 120px;
-            color: var(--hacker-green);
-        }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin: 0.8rem 0;
-            padding: 0.7rem 1.4rem;
-            background: rgba(255, 0, 60, 0.1);
-            border: 1px solid var(--fsociety-red);
-            border-radius: 5px;
-            color: var(--text-color);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        
-        .btn:hover {
-            background: rgba(255, 0, 60, 0.2);
-            box-shadow: 0 0 15px rgba(255, 0, 60, 0.4);
-            transform: translateY(-2px);
-        }
-        
-        .btn.github {
-            background: rgba(0, 255, 65, 0.1);
-            border: 1px solid var(--hacker-green);
-        }
-        
-        .btn.github:hover {
-            background: rgba(0, 255, 65, 0.2);
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
-        }
-        
-        .audio-control {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 1rem;
-            border-radius: 50px;
-            border: 2px solid var(--fsociety-red);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.5rem;
-            z-index: 100;
-        }
-        
-        .audio-control:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(255, 0, 60, 0.8);
-        }
-        
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.6rem 1rem;
-            background: rgba(0, 0, 0, 0.9);
-            border-top: 1px solid rgba(0, 255, 65, 0.3);
-            font-size: 0.8rem;
-            color: var(--hacker-green);
-            font-family: 'Courier New', monospace;
-            position: relative;
-        }
-        
-        .status-bar::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--fsociety-red), transparent);
-        }
-        
-        .desktop-warning {
-            background: rgba(255, 0, 60, 0.1);
-            border: 1px solid var(--fsociety-red);
-            border-radius: 5px;
-            padding: 1rem;
-            margin: 1rem 0;
-            text-align: center;
-            display: none;
-        }
-        
-        .desktop-warning.show {
-            display: block;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 0, 60, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 0, 60, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 0, 60, 0); }
-        }
-        
-        .glitch {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .glitch::before, .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .glitch::before {
-            left: 2px;
-            text-shadow: -2px 0 var(--fsociety-red);
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim 5s infinite linear alternate-reverse;
-        }
-        
-        .glitch::after {
-            left: -2px;
-            text-shadow: -2px 0 #00fff9;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim2 5s infinite linear alternate-reverse;
-        }
-        
-        @keyframes glitch-anim {
-            0% { clip: rect(31px, 9999px, 15px, 0); }
-            5% { clip: rect(32px, 9999px, 30px, 0); }
-            10% { clip: rect(16px, 9999px, 34px, 0); }
-            15% { clip: rect(42px, 9999px, 32px, 0); }
-            20% { clip: rect(12px, 9999px, 31px, 0); }
-            25% { clip: rect(14px, 9999px, 27px, 0); }
-            30% { clip: rect(2px, 9999px, 30px, 0); }
-            35% { clip: rect(25px, 9999px, 6px, 0); }
-            40% { clip: rect(25px, 9999px, 24px, 0); }
-            45% { clip: rect(37px, 9999px, 39px, 0); }
-            50% { clip: rect(8px, 9999px, 36px, 0); }
-            55% { clip: rect(10px, 9999px, 22px, 0); }
-            60% { clip: rect(6px, 9999px, 16px, 0); }
-            65% { clip: rect(19px, 9999px, 11px, 0); }
-            70% { clip: rect(16px, 9999px, 10px, 0); }
-            75% { clip: rect(19px, 9999px, 33px, 0); }
-            80% { clip: rect(20px, 9999px, 6px, 0); }
-            85% { clip: rect(39px, 9999px, 22px, 0); }
-            90% { clip: rect(9px, 9999px, 18px, 0); }
-            95% { clip: rect(6px, 9999px, 37px, 0); }
-            100% { clip: rect(23px, 9999px, 6px, 0); }
-        }
-        
-        @keyframes glitch-anim2 {
-            0% { clip: rect(31px, 9999px, 15px, 0); }
-            5% { clip: rect(32px, 9999px, 30px, 0); }
-            10% { clip: rect(16px, 9999px, 34px, 0); }
-            15% { clip: rect(42px, 9999px, 32px, 0); }
-            20% { clip: rect(12px, 9999px, 31px, 0); }
-            25% { clip: rect(14px, 9999px, 27px, 0); }
-            30% { clip: rect(2px, 9999px, 30px, 0); }
-            35% { clip: rect(25px, 9999px, 6px, 0); }
-            40% { clip: rect(25px, 9999px, 24px, 0); }
-            45% { clip: rect(37px, 9999px, 39px, 0); }
-            50% { clip: rect(8px, 9999px, 36px, 0); }
-            55% { clip: rect(10px, 9999px, 22px, 0); }
-            60% { clip: rect(6px, 9999px, 16px, 0); }
-            65% { clip: rect(19px, 9999px, 11px, 0); }
-            70% { clip: rect(16px, 9999px, 10px, 0); }
-            75% { clip: rect(19px, 9999px, 33px, 0); }
-            80% { clip: rect(20px, 9999px, 6px, 0); }
-            85% { clip: rect(39px, 9999px, 22px, 0); }
-            90% { clip: rect(9px, 9999px, 18px, 0); }
-            95% { clip: rect(6px, 9999px, 37px, 0); }
-            100% { clip: rect(23px, 9999px, 6px, 0); }
-        }
-        
-        /* Media Queries para dispositivos móveis */
-        @media (min-width: 768px) {
-            header {
-                padding: 2rem;
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .container {
-                max-width: 1200px;
-                margin: 2rem auto;
-                padding: 2rem;
-            }
-            
-            .card {
-                padding: 1.8rem;
-                margin-bottom: 2rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.5rem;
-            }
-            
-            h2 {
-                font-size: 1.3rem;
-            }
-            
-            .card {
-                padding: 1rem;
-            }
-            
-            .terminal::before {
-                position: static;
-                margin-bottom: 0.5rem;
-                display: block;
-            }
-            
-            .terminal-content {
-                margin-left: 0;
-            }
-        }
-    </style>
-</head>
-<body>
-    <video id="video-bg" autoplay muted loop playsinline>
-        <source src="https://assets.codepen.io/3361033/mr-robot-terminal-scene.mp4" type="video/mp4">
-        <!-- Fallback para caso o vídeo não carregue -->
-    </video>
-    <div class="overlay"></div>
-    <div class="scanlines"></div>
-    
-    <header>
-        <h1 class="glitch" data-text="GITHUB COPILOT CLI">GITHUB COPILOT CLI</h1>
-        <p class="subtitle">Instalação 100% Automática com 1 Comando</p>
-       
-    </header>
-    
-    <div class="container">
-        <!-- Aviso de modo desktop -->
-        <div class="desktop-warning" id="desktopWarning">
-            <h3><i class="fas fa-desktop"></i> MODO DESKTOP DETECTADO</h3>
-            <p>Você está acessando de um computador desktop.</p>
-            <p><strong>Sua experiencia de usuario pode ser melhor de um navedor mobile.</strong></p>
-        </div>
-        
-        <a href="https://github.com/kastielslip/copilot-termux" class="btn github">
-            <i class="fab fa-github"></i> ACESSAR REPOSITÓRIO
-        </a>
-        
-        <div class="card">
-            <h2><i class="fas fa-project-diagram"></i> ARQUITETURA DO SISTEMA</h2>
-            <p>O GitHub Copilot CLI foi adaptado para funcionar no Termux (Android) através de patches e stubs que substituem módulos nativos incompatíveis:</p>
-            <h3>COMPONENTES PRINCIPAIS:</h3>
-            <ul>
-                <li><strong>Node.js 18+</strong> - Runtime JavaScript necessário</li>
-                <li><strong>node-pty</strong> - Emulação de terminal (stubbed)</li>
-                <li><strong>sharp</strong> - Processamento de imagens (stubbed)</li>
-                <li><strong>Patches ESM</strong> - Modificações para compatibilidade ARM64</li>
-            </ul>
-        </div>
-        
-        <div class="card">
-            <h2><i class="fas fa-cogs"></i> PROCESSO DE INSTALAÇÃO</h2>
-            <p>O script automatizado realiza os seguintes passos:</p>
-            <div class="terminal">
-                <div class="terminal-content">npm install -g file:github-copilot-0.0.346.tgz</div>
-            </div>
-            <button class="copy-btn" onclick="copyTerminalCommand(this)">COPY COMMAND</button>
-            <h3>ETAPAS DO SCRIPT:</h3>
-            <ul>
-                <li>Verifica dependências (Node.js, npm, git)</li>
-                <li>Baixa o tarball da versão especificada</li>
-                <li>Instala o pacote globalmente</li>
-                <li>Aplica patches de compatibilidade</li>
-                <li>Cria stubs para módulos nativos</li>
-                <li>Configura permissões e executáveis</li>
-            </ul>
-        </div>
-        
-        <div class="card">
-            <h2><i class="fas fa-tools"></i> SISTEMA DE PATCHES</h2>
-            <p>Os patches modificam o código do Copilot para funcionar no ambiente ARM64 do Termux:</p>
-            <h3>PATCHES APLICADOS:</h3>
-            <ul>
-                <li><strong>node-pty stub</strong> — Substitui funcionalidades de PTY</li>
-                <li><strong>sharp stub</strong> — Remove dependências de processamento de imagem</li>
-                <li><strong>ESM fixes</strong> — Corrige imports e requires</li>
-                <li><strong>Path adjustments</strong> — Adapta caminhos para Termux</li>
-            </ul>
-            
-            <div class="code-container">
-                <div class="code-header">
-                    <div class="file-info">
-                        <i class="fas fa-file-code"></i>
-                        <span>node-pty-stub.js</span>
-                    </div>
-                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
-                </div>
-                <div class="code-content">
-                    <pre><code><span class="keyword">export</span> <span class="keyword">function</span> <span class="function">spawn</span>() {
-    <span class="keyword">return</span> {
-        <span class="function">on</span>: () => {},
-        <span class="function">write</span>: () => {}
-    };
-}
+<div align="center">
 
-<span class="comment">// Stub para compatibilidade com Termux</span>
-<span class="keyword">export</span> <span class="keyword">const</span> <span class="function">fork</span> = <span class="keyword">function</span>() {
-    <span class="keyword">return</span> <span class="function">spawn</span>();
-};</code></pre>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card">
-            <h2><i class="fas fa-rocket"></i> FLUXO DE EXECUÇÃO</h2>
-            <p>Quando você executa o Copilot:</p>
-            <ul>
-                <li>O comando <code>copilot</code> inicia o Node.js</li>
-                <li>Carrega os módulos patcheados</li>
-                <li>Conecta com a API do GitHub via HTTPS</li>
-                <li>Processa suas solicitações localmente</li>
-                <li>Retorna sugestões de código em tempo real</li>
-            </ul>
-            
-            <div class="code-container">
-                <div class="code-header">
-                    <div class="file-info">
-                        <i class="fas fa-terminal"></i>
-                        <span>execução.terminal</span>
-                    </div>
-                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
-                </div>
-                <div class="code-content">
-                    <pre><code><span class="keyword">$</span> copilot <span class="function">sugerir</span> <span class="string">"função para validar email"</span>
+# 🤖 GitHub Copilot CLI para Termux
 
-<span class="comment">> Analisando contexto...</span>
-<span class="comment">> Conectando com GitHub API...</span>
-<span class="comment">> Gerando sugestões...</span>
+[![Termux](https://img.shields.io/badge/Termux-000000?style=for-the-badge&logo=android&logoColor=white)](https://termux.com)
+[![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
+[![Stars](https://img.shields.io/github/stars/kastielslip/copilot-termux?style=for-the-badge)](https://github.com/kastielslip/copilot-termux)
 
-<span class="function">function</span> <span class="function">validarEmail</span>(email) {
-    <span class="keyword">const</span> regex = <span class="string">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span>;
-    <span class="keyword">return</span> regex.<span class="function">test</span>(email);
-}</code></pre>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card">
-            <h2><i class="fas fa-shield-alt"></i> SEGURANÇA E PRIVACIDADE</h2>
-            <p>O sistema mantém as mesmas garantias de segurança da versão oficial:</p>
-            <ul>
-                <li>Autenticação via token OAuth do GitHub</li>
-                <li>Comunicação criptografada (HTTPS)</li>
-                <li>Nenhum dado armazenado localmente sem permissão</li>
-                <li>Compatível com políticas de privacidade do GitHub</li>
-            </ul>
-        </div>
-        
-        <div class="card">
-            <h2><i class="fas fa-exclamation-triangle"></i> LIMITAÇÕES CONHECIDAS</h2>
-            <p>Algumas funcionalidades possuem limitações no ambiente Termux:</p>
-            <ul>
-                <li>Funcionalidades de terminal avançadas podem não funcionar 100%</li>
-                <li>Processamento de imagens desabilitado (não essencial)</li>
-                <li>Performance pode variar dependendo do dispositivo</li>
-                <li>Alguns comandos podem precisar de adaptações</li>
-            </ul>
-        </div>
-        
-        <a href="https://github.com/kastielslip/copilot-termux" class="btn github">
-            <i class="fab fa-github"></i> ACESSAR REPOSITÓRIO
-        </a>
-    </div>
-    
-    <div class="audio-control" onclick="toggleAudio()" id="audioBtn">
-        🔇
-    </div>
-    
-    <div class="status-bar">
-        <div class="status-item">SISTEMA: <span id="system-status">OPERACIONAL</span></div>
-        <div class="status-item">fsociety@root:~$ _</div>
-    </div>
-    
-    <!-- Áudio com fonte funcional do seu código -->
-    <audio id="bgMusic" loop>
-        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
-    </audio>
-    
-    <script>
-        // Inicializar elementos quando a página carregar
-        document.addEventListener('DOMContentLoaded', function() {
-            // Configurar vídeo de fundo
-            const videoBg = document.getElementById('video-bg');
-            
-            // Tentar carregar o vídeo
-            videoBg.play().catch(e => {
-                console.log('Vídeo não pôde ser reproduzido automaticamente:', e);
-                document.body.style.background = "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)";
-            });
-            
-            // Detectar modo desktop
-            detectDesktopMode();
-            
-            // Adicionar efeito de digitação no status
-            typeWriter();
-            
-            // Inicializar efeitos de digitação nos terminais
-            initTerminalEffects();
-        });
+### *IA da Microsoft rodando 100% no seu Android*
 
-        // Detecção simples de modo desktop
-        function detectDesktopMode() {
-            const warningElement = document.getElementById('desktopWarning');
-            
-            // Detecção mais precisa de desktop
-            const isDesktop = !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            if (isDesktop) {
-                warningElement.classList.add('show');
-                console.log('Modo desktop detectado');
-            } else {
-                console.log('Dispositivo móvel detectado');
-            }
-        }
-        
-        // Efeito de digitação para o status
-        function typeWriter() {
-            const statusElement = document.getElementById('system-status');
-            const originalText = statusElement.textContent;
-            statusElement.textContent = '';
-            
-            let i = 0;
-            const typing = setInterval(() => {
-                if (i < originalText.length) {
-                    statusElement.textContent += originalText.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(typing);
-                    setInterval(() => {
-                        statusElement.textContent = statusElement.textContent.endsWith('_') 
-                            ? originalText 
-                            : originalText + '_';
-                    }, 500);
-                }
-            }, 100);
-        }
-        
-        // Efeitos de digitação nos terminais
-        function initTerminalEffects() {
-            document.querySelectorAll('.terminal-content').forEach(terminal => {
-                const originalText = terminal.textContent;
-                terminal.textContent = '';
-                
-                let i = 0;
-                const typing = setInterval(() => {
-                    if (i < originalText.length) {
-                        terminal.textContent += originalText.charAt(i);
-                        i++;
-                    } else {
-                        clearInterval(typing);
-                    }
-                }, 30);
-            });
-        }
-        
-        // ========== SISTEMA DE ÁUDIO FUNCIONAL ==========
-        let audioPlaying = false;
-        const audio = document.getElementById('bgMusic');
-        const audioBtn = document.getElementById('audioBtn');
+[📥 Instalação](#-instalação-rápida) • [✨ Características](#-características) • [🎯 Uso](#-como-usar) • [🐛 Troubleshooting](#-troubleshooting)
 
-        // Sistema de áudio simples e funcional
-        function toggleAudio() {
-            if (audioPlaying) {
-                audio.pause();
-                audioPlaying = false;
-                audioBtn.textContent = '🔇';
-            } else {
-                audio.play().catch(e => {
-                    console.log('Erro ao reproduzir áudio, tentando fallback:', e);
-                    // Tentar carregar uma fonte alternativa se a primeira falhar
-                    audio.innerHTML = '<source src="https://assets.codepen.io/3361033/ambient-synth.mp3" type="audio/mpeg">';
-                    audio.load();
-                    audio.play().then(() => {
-                        audioPlaying = true;
-                        audioBtn.textContent = '🔊';
-                    }).catch(e2 => {
-                        console.log('Fallback também falhou:', e2);
-                    });
-                });
-                audioPlaying = true;
-                audioBtn.textContent = '🔊';
-            }
-        }
+</div>
 
-        // Tentar reproduzir automaticamente (pode ser bloqueado por navegadores)
-        audio.play().then(() => {
-            audioPlaying = true;
-            audioBtn.textContent = '🔊';
-        }).catch(e => {
-            console.log('Reprodução automática bloqueada, aguardando interação do usuário');
-            audioPlaying = false;
-            audioBtn.textContent = '🔇';
-        });
+---
 
-        // Configurar volume
-        audio.volume = 0.3;
-        // ========== FIM DO SISTEMA DE ÁUDIO ==========
-        
-        // Função para copiar código dos containers
-        function copyCode(button) {
-            const codeContainer = button.closest('.code-container');
-            const codeElement = codeContainer.querySelector('code');
-            const textToCopy = codeElement.textContent;
-            
-            copyToClipboard(textToCopy, button);
-        }
-        
-        // Função para copiar comando do terminal
-        function copyTerminalCommand(button) {
-            const terminal = button.previousElementSibling;
-            const commandText = terminal.querySelector('.terminal-content').textContent;
-            
-            copyToClipboard(commandText, button);
-        }
-        
-        // Função universal para copiar para clipboard
-        function copyToClipboard(text, button) {
-            // Método moderno usando Clipboard API
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(text).then(() => {
-                    showCopyFeedback(button);
-                }).catch(err => {
-                    console.error('Erro ao copiar: ', err);
-                    fallbackCopyText(text, button);
-                });
-            } else {
-                // Fallback para navegadores mais antigos
-                fallbackCopyText(text, button);
-            }
-        }
-        
-        function fallbackCopyText(text, button) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            textArea.style.top = '-999999px';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-                document.execCommand('copy');
-                showCopyFeedback(button);
-            } catch (err) {
-                console.error('Fallback: Erro ao copiar texto: ', err);
-                button.textContent = 'ERROR!';
-            }
-            
-            document.body.removeChild(textArea);
-        }
-        
-        function showCopyFeedback(button) {
-            const originalText = button.textContent;
-            button.textContent = 'COPIED!';
-            button.classList.add('copied');
-            
-            setTimeout(() => {
-                button.textContent = originalText;
-                button.classList.remove('copied');
-            }, 2000);
-        }
-        
-        // Adicionar efeito de glitch aleatório nos títulos
-        setInterval(() => {
-            const glitch = document.querySelector('.glitch');
-            glitch.style.animation = 'none';
-            setTimeout(() => {
-                glitch.style.animation = '';
-            }, 100);
-        }, 8000);
-        
-        // Smooth scroll para links internos
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-        
-        // Efeito de scanline aleatório
-        setInterval(() => {
-            const scanlines = document.querySelector('.scanlines');
-            scanlines.style.opacity = Math.random() * 0.1 + 0.03;
-        }, 3000);
-    </script>
-</body>
-</html>
+## 🚀 Instalação Rápida
+
+> **Instalação com 1 comando - Totalmente automática**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install.sh | bash
+```
+
+<details>
+<summary><b>📦 Ou escolha uma versão específica</b></summary>
+
+### Versão 0.0.353 (mais recente)
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install.sh) 0.0.353
+```
+
+### Versão 0.0.346 (estável)
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install.sh) 0.0.346
+```
+
+</details>
+
+---
+
+## ✨ Características
+
+<table>
+<tr>
+<td>
+
+### 🎯 Automação Completa
+- ✅ Download automático
+- ✅ Instalação zero-config
+- ✅ Bypass de módulos nativos
+- ✅ Configuração automática
+
+</td>
+<td>
+
+### 🔧 Recursos Técnicos
+- ✅ Detecção de sistema
+- ✅ Multi-versão
+- ✅ Logs detalhados
+- ✅ Fallback inteligente
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🎯 Como Usar
+
+### Após instalação:
+
+> ⚠️ **Reinicie o terminal antes de usar**
+
+```bash
+exit
+```
+
+### Comandos:
+
+**Ver versão:**
+```bash
+copilot --version
+```
+
+**Ver ajuda:**
+```bash
+copilot --help
+```
+
+**Modo interativo:**
+```bash
+copilot
+```
+
+**Prompt direto:**
+```bash
+copilot -p "como listar arquivos no linux?"
+```
+
+---
+
+## 🔧 Arquitetura
+
+### Bypass de Módulos Nativos
+
+**Arquivo:** `~/.copilot-hooks/bypass-final.js`
+
+```javascript
+const Module = require('module');
+const originalLoad = Module._load;
+
+Module._load = function(request, parent) {
+  if (request.includes('pty.node')) {
+    return { spawn: () => ({ pid: 9999, on: () => {}, write: () => true }) };
+  }
+  if (request.includes('sharp')) {
+    return sharpStub;
+  }
+  return originalLoad.apply(this, arguments);
+};
+```
+
+### Estrutura:
+
+```
+~/.copilot-hooks/bypass-final.js    # Bypass
+~/.bashrc                            # NODE_OPTIONS
+~/copilot-install-*.log              # Logs
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Erro: "Cannot find module"
+
+```bash
+source ~/.bashrc
+echo $NODE_OPTIONS
+```
+
+### Erro: "Failed to load native module"
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install.sh | bash
+```
+
+### Ver logs:
+
+```bash
+cat ~/copilot-install-*.log | less
+```
+
+---
+
+## 🔄 Atualização
+
+```bash
+npm uninstall -g @github/copilot
+bash <(curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install.sh) 0.0.353
+```
+
+---
+
+## 📊 Compatibilidade
+
+| Versão | Status | Testado |
+|--------|--------|---------|
+| 0.0.346 | ✅ Estável | Android 11+ ARM64 |
+| 0.0.353 | ✅ Funcional | Android 11+ ARM64 |
+
+---
+
+## 📜 Licença
+
+MIT License - [LICENSE](LICENSE)
+
+---
+
+<div align="center">
+
+**Feito com ☕ por [kastielslip](https://github.com/kastielslip)**
+
+[![GitHub](https://img.shields.io/badge/GitHub-kastielslip-181717?style=for-the-badge&logo=github)](https://github.com/kastielslip)
+
+</div>
