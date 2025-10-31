@@ -73,8 +73,8 @@ if [ $? -eq 0 ]; then
     echo ""
     echo "📝 Próximos passos:"
     echo "   1. Reinicie o Termux ou execute: source ~/.bashrc"
-    echo "   2. Autentique: copilot auth login"
-    echo "   3. Use: copilot explain 'seu comando aqui'"
+    echo "   2. Autentique no Modo chat interativo: copilot --banner"
+    echo "   3. Modo simples rapido : copilot -p 'seu comando aqui'"
     echo ""
 else
     echo ""
