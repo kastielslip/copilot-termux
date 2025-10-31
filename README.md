@@ -155,7 +155,7 @@ Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ### *"O controle é uma ilusão. Mas ainda precisamos dele para programar."*
 
-![Mr Robot Glitch](https://media.giphy.com/media/dLolp8dtrYCJi/giphy.gif)
+![Mr Robot Glitch](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdjlnN2NyY3cwdHVlbTV5bWk5NWZ6bzJ2bWJ4bTZqOWdrbnlhMmhxaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HFj3iHt8F2rEQnK/giphy.gif)
 
 **Feito com ☕ e 💀 por [kastielslip](https://github.com/kastielslip)**
 
