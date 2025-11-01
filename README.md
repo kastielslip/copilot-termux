@@ -87,16 +87,6 @@ Solução de problemas comuns e erros.
 
 ---
 
-
-## 📝 Comandos Principais
-
-```bash
-copilot --version
-copilot --help
-copilot auth login
-copilot
-```
-
 </div>
 
 
