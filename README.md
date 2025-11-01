@@ -43,8 +43,6 @@ Tá, mas como isso funciona? Aqui tem tudo explicado de forma clara (sem manual 
 
 <div align="center">
 
-## 📄 
-
 ### [📖 COMO FUNCIONA](https://raw.githack.com/kastielslip/copilot-termux/master/docs/COMO_FUNCIONA.html)
 
 Arquitetura detalhada do sistema de bypass e como o Copilot funciona no Termux.
