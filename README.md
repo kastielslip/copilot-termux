@@ -8,8 +8,6 @@
 
 ### *IA da Microsoft rodando 100% no seu Android*
 
-[📥 Instalação](#-instalação-rápida) • [✨ Características](#-características) • [🎯 Uso](#-como-usar) • [🐛 Troubleshooting](#-troubleshooting)
-
 </div>
 
 ---
@@ -89,11 +87,6 @@ Solução de problemas comuns e erros.
 
 ---
 
-## 🚀 Instalação Rápida
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install.sh | bash
-```
 
 ## 📝 Comandos Principais
 
@@ -140,10 +133,6 @@ copilot
 
 > ⚠️ **Reinicie o terminal antes de usar**
 
-```bash
-exit
-```
-
 ### Comandos:
 
 **Ver versão:**
@@ -164,60 +153,6 @@ copilot
 **Prompt direto:**
 ```bash
 copilot -p "como listar arquivos no linux?"
-```
-
----
-
-## 🔧 Arquitetura
-
-### Bypass de Módulos Nativos
-
-**Arquivo:** `~/.copilot-hooks/bypass-final.js`
-
-```javascript
-const Module = require('module');
-const originalLoad = Module._load;
-
-Module._load = function(request, parent) {
-  if (request.includes('pty.node')) {
-    return { spawn: () => ({ pid: 9999, on: () => {}, write: () => true }) };
-  }
-  if (request.includes('sharp')) {
-    return sharpStub;
-  }
-  return originalLoad.apply(this, arguments);
-};
-```
-
-### Estrutura:
-
-```
-~/.copilot-hooks/bypass-final.js    # Bypass
-~/.bashrc                            # NODE_OPTIONS
-~/copilot-install-*.log              # Logs
-```
-
----
-
-## 🐛 Troubleshooting
-
-### Erro: "Cannot find module"
-
-```bash
-source ~/.bashrc
-echo $NODE_OPTIONS
-```
-
-### Erro: "Failed to load native module"
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/kastielslip/copilot-termux/master/install.sh | bash
-```
-
-### Ver logs:
-
-```bash
-cat ~/copilot-install-*.log | less
 ```
 
 ---
